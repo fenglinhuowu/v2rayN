@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "ServiceLib.UdpTest/7.24.9": {
+        "runtime": {
+          "ServiceLib.UdpTest.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ServiceLib.UdpTest/7.24.9": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
