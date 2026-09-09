@@ -2,6 +2,11 @@
 dist/
 *.dmg
 *.app/
+bin/
+obj/
+*.pdb
+*.sourcelink.json
+*.TestResults/
 
 # Core Binaries
 *.zip
