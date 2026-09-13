@@ -39,6 +39,15 @@ jobs:
             matrix.arch
           ) 
         }}
+      DistDir: |-
+        ${{
+          case(
+            inputs.target == 'macos', 'macdist',
+            inputs.target == 'windows', 'windowsdist',
+            inputs.target == 'windows-desktop', 'windowsdist',
+            'dist'
+          )
+        }}
     steps:
     - name: Checkout
       uses: actions/checkout@v7
@@ -50,20 +59,22 @@ jobs:
         path: v2rayN-${{ env.Target }}-${{ env.Arch }}
     
     - name: Get v2rayN-core-bin
-      run: wget -nv -O v2rayN-$Target-$Arch.zip "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/v2rayN-$Target-$Arch.zip"
+      run: |
+        mkdir -p "$DistDir"
+        wget -nv -O "$DistDir/v2rayN-$Target-$Arch.zip" "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/v2rayN-$Target-$Arch.zip"
     
     - name: Package zip archive
-      run: 7z a -tZip v2rayN-$Target-$Arch.zip v2rayN-$Target-$Arch -mx1
-
+      run: 7z a -tZip "$DistDir/v2rayN-$Target-$Arch.zip" v2rayN-$Target-$Arch -mx1
+    
     - name: Rename windows-desktop 
       if: inputs.target == 'windows-desktop'
-      run: mv "v2rayN-$Target-$Arch.zip" "v2rayN-$Target-$Arch-desktop.zip"
+      run: mv "$DistDir/v2rayN-$Target-$Arch.zip" "$DistDir/v2rayN-$Target-$Arch-desktop.zip"
     
     - name: Upload zip artifact
       uses: actions/upload-artifact@v7
       with:
         name: release-${{ inputs.target }}-${{ matrix.arch }}
-        path: v2rayN*.zip
+        path: ${{ env.DistDir }}/v2rayN*.zip
         if-no-files-found: error
 
   release:

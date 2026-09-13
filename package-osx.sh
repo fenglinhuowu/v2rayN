@@ -5,12 +5,12 @@ OutputPath="$2"
 Version="$3"
 
 FileName="v2rayN-${Arch}.zip"
-wget -nv -O $FileName "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/$FileName"
+    wget -nv -O $FileName "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/$FileName"
 7z x $FileName
 cp -rf v2rayN-${Arch}/* $OutputPath
 
-PackagePath="v2rayN-Package-${Arch}"
-mkdir -p "$PackagePath/v2rayN.app/Contents/Resources"
+PackagePath="macdist/v2rayN-Package-${Arch}"
+mkdir -p "$PackagePath/v2rayN.app/Contents/Resources" macdist
 cp -rf "$OutputPath" "$PackagePath/v2rayN.app/Contents/MacOS"
 cp -f "$PackagePath/v2rayN.app/Contents/MacOS/v2rayN.icns" "$PackagePath/v2rayN.app/Contents/Resources/AppIcon.icns"
 echo "When this file exists, app will not store configs under this folder" > "$PackagePath/v2rayN.app/Contents/MacOS/NotStoreConfigHere.txt"
@@ -66,5 +66,5 @@ create-dmg \
     --icon "v2rayN.app" 160 185 \
     --hide-extension "v2rayN.app" \
     --app-drop-link 500 185 \
-    "v2rayN-${Arch}.dmg" \
+    "macdist/v2rayN-${Arch}.dmg" \
     "$PackagePath/v2rayN.app"
