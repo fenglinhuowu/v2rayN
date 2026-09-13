@@ -7,7 +7,6 @@ namespace v2rayN.Desktop.Views;
 public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
 {
     private static Config _config;
-    private static readonly string _tag = "ProfilesView";
 
     public ProfilesView()
     {
@@ -16,14 +15,16 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         _config = AppManager.Instance.Config;
         conTheme.Content ??= new ThemeSettingView();
 
+        lstProfiles.SelectionMode = SelectionMode.Multiple;
+
         menuSelectAll.Click += menuSelectAll_Click;
-        btnAutofitColumnWidth.Click += BtnAutofitColumnWidth_Click;
+        //btnAutofitColumnWidth.Click += BtnAutofitColumnWidth_Click; // DataGrid only
         txtServerFilter.KeyDown += TxtServerFilter_KeyDown;
         lstProfiles.KeyDown += LstProfiles_KeyDown;
         lstProfiles.SelectionChanged += lstProfiles_SelectionChanged;
         lstProfiles.DoubleTapped += LstProfiles_DoubleTapped;
-        lstProfiles.LoadingRow += LstProfiles_LoadingRow;
-        lstProfiles.Sorting += LstProfiles_Sorting;
+        //lstProfiles.LoadingRow += LstProfiles_LoadingRow; // DataGrid only
+        //lstProfiles.Sorting += LstProfiles_Sorting; // DataGrid only
         if (_config.UiItem.EnableDragDropSort)
         {
             lstProfiles.SetValue(DragDrop.AllowDropProperty, true);
@@ -187,7 +188,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
     {
         if (lstProfiles.SelectedIndex >= 0)
         {
-            lstProfiles.ScrollIntoView(lstProfiles.SelectedItem, null);
+            lstProfiles.ScrollIntoView(lstProfiles.SelectedItem);
         }
     }
 
@@ -315,43 +316,44 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         }
     }
 
-    private void BtnAutofitColumnWidth_Click(object? sender, RoutedEventArgs e)
-    {
-        AutofitColumnWidth();
-    }
+    //private void BtnAutofitColumnWidth_Click(object? sender, RoutedEventArgs e)
+    //{
+    //    AutofitColumnWidth();
+    //}
 
-    private void AutofitColumnWidth()
-    {
-        try
-        {
-            //First scroll horizontally to the initial position to avoid the control crash bug
-            if (lstProfiles.SelectedIndex >= 0)
-            {
-                lstProfiles.ScrollIntoView(lstProfiles.SelectedItem, lstProfiles.Columns[0]);
-            }
-            else
-            {
-                var model = lstProfiles.ItemsSource.Cast<ProfileItemModel>();
-                if (model.Any())
-                {
-                    lstProfiles.ScrollIntoView(model.First(), lstProfiles.Columns[0]);
-                }
-                else
-                {
-                    return;
-                }
-            }
+    // Columns are not applicable to the card-based profile list.
+    //private void AutofitColumnWidth()
+    //{
+    //    try
+    //    {
+    //        //First scroll horizontally to the initial position to avoid the control crash bug
+    //        if (lstProfiles.SelectedIndex >= 0)
+    //        {
+    //            lstProfiles.ScrollIntoView(lstProfiles.SelectedItem, lstProfiles.Columns[0]);
+    //        }
+    //        else
+    //        {
+    //            var model = lstProfiles.ItemsSource.Cast<ProfileItemModel>();
+    //            if (model.Any())
+    //            {
+    //                lstProfiles.ScrollIntoView(model.First(), lstProfiles.Columns[0]);
+    //            }
+    //            else
+    //            {
+    //                return;
+    //            }
+    //        }
 
-            foreach (var it in lstProfiles.Columns)
-            {
-                it.Width = new DataGridLength(1, DataGridLengthUnitType.Auto);
-            }
-        }
-        catch (Exception ex)
-        {
-            Logging.SaveLog(_tag, ex);
-        }
-    }
+    //        foreach (var it in lstProfiles.Columns)
+    //        {
+    //            it.Width = new DataGridLength(1, DataGridLengthUnitType.Auto);
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Logging.SaveLog(_tag, ex);
+    //    }
+    //}
 
     private void TxtServerFilter_KeyDown(object? sender, KeyEventArgs e)
     {
@@ -367,71 +369,12 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
 
     private void RestoreUI()
     {
-        try
-        {
-            var lvColumnItem = _config.UiItem.MainColumnItem.OrderBy(t => t.Index).ToList();
-            var displayIndex = 0;
-            foreach (var item in lvColumnItem)
-            {
-                foreach (var item2 in lstProfiles.Columns)
-                {
-                    if (item2.Tag == null)
-                    {
-                        continue;
-                    }
-                    if (item2.Tag.Equals(item.Name))
-                    {
-                        if (item.Width < 0)
-                        {
-                            item2.IsVisible = false;
-                        }
-                        else
-                        {
-                            item2.Width = new DataGridLength(item.Width, DataGridLengthUnitType.Pixel);
-                            item2.DisplayIndex = displayIndex++;
-                        }
-                        if (item.Name.StartsWith("to", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            item2.IsVisible = _config.GuiItem.EnableStatistics;
-                        }
-                        if (item.Name.Equals("IpInfo", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            item2.IsVisible = _config.SpeedTestItem.IPAPIUrl.IsNotEmpty() && !_config.UiItem.HideColumnIpInfo;
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Logging.SaveLog(_tag, ex);
-        }
+        // Columns are not used in the card-based profile list.
     }
 
     private void StorageUI()
     {
-        try
-        {
-            List<ColumnItem> lvColumnItem = [];
-            foreach (var item2 in lstProfiles.Columns)
-            {
-                if (item2.Tag == null)
-                {
-                    continue;
-                }
-                lvColumnItem.Add(new()
-                {
-                    Name = (string)item2.Tag,
-                    Width = (int)(item2.IsVisible == true ? item2.ActualWidth : -1),
-                    Index = item2.DisplayIndex
-                });
-            }
-            _config.UiItem.MainColumnItem = lvColumnItem;
-        }
-        catch (Exception ex)
-        {
-            Logging.SaveLog(_tag, ex);
-        }
+        // Columns are not used in the card-based profile list.
     }
 
     #endregion UI
@@ -484,7 +427,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
             {
                 return;
             }
-            var row = visualSource.FindAncestorOfType<DataGridRow>(true);
+            var row = visualSource.FindAncestorOfType<ListBoxItem>(true);
             if (row?.DataContext == null)
             {
                 return;
@@ -549,7 +492,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
             return;
         }
 
-        var targetRow = visualTarget.FindAncestorOfType<DataGridRow>(true);
+        var targetRow = visualTarget.FindAncestorOfType<ListBoxItem>(true);
         if (targetRow is not { DataContext: ProfileItemModel targetItem })
         {
             return;
