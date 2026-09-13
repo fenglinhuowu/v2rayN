@@ -298,8 +298,8 @@ public partial class OptionSettingViewModel : MyReactiveObject, ICloseable
         }
         var fragmentLengths = Utils.String2List(FragmentLengths) ?? [];
         var fragmentDelays = Utils.String2List(FragmentDelays) ?? [];
-        if (fragmentLengths.Any(item => !Utils.TryParseRange(item, 0, int.MaxValue, out _, out _))
-            || fragmentDelays.Any(item => !Utils.TryParseRange(item, 0, int.MaxValue, out _, out _))
+        if (fragmentLengths.Any(item => !Utils.TryParseRange(item, 1, int.MaxValue, out _, out _))
+            || fragmentDelays.Any(item => !Utils.TryParseRange(item, 1, int.MaxValue, out _, out _))
             || (FragmentMaxSplit.IsNotEmpty() && !Utils.TryParseMaxSplit(FragmentMaxSplit, 0, 10000, out _, out _)))
         {
             NoticeManager.Instance.Enqueue(ResUI.FillFragmentParameterError);
