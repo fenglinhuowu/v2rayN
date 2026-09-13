@@ -30,8 +30,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         menuBackupAndRestore.Click += MenuBackupAndRestore_Click;
         menuClose.Click += MenuClose_Click;
 
-        conTheme.Content ??= new ThemeSettingView();
-
         this.WhenActivated(disposables =>
         {
             //servers
