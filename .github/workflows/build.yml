@@ -27,7 +27,15 @@ jobs:
         )
       }}
     env:
-      Output: "${{ github.workspace }}/${{ matrix.arch }}"
+      OutDir: |-
+        ${{
+          case(
+            inputs.target == 'macos', 'macdist',
+            inputs.target == 'windows', 'windowsdist',
+            matrix.arch
+          )
+        }}
+      Output: "${{ github.workspace }}/${{ env.OutDir }}"
       RID: |-
         ${{
           case(
@@ -86,10 +94,10 @@ jobs:
     - name: Remove Debug Symbols
       shell: bash
       run: |
-        find ${{ matrix.arch }} -type f -name '*.pdb' -delete
+        find ${{ env.OutDir }} -type f -name '*.pdb' -delete
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v7
       with:
         name: ${{ matrix.arch }}
-        path: ${{ matrix.arch }}
+        path: ${{ env.OutDir }}
