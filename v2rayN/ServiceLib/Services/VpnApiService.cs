@@ -28,18 +28,46 @@ public class VpnApiService
         return baseUri.IsNotEmpty();
     }
 
-    private async Task<AuthResponse?> PostAuthAsync(string baseUri, string path, string email, string password)
+    private static string? ExtractServerError(string? body)
     {
-        var payload = new AuthRequest { email = email, password = password };
-        var json = JsonSerializer.Serialize(payload);
-        using var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        using var response = await _httpClient.PostAsync($"{baseUri.TrimEnd('/')}/{path.TrimStart('/')}", content);
-        if (!response.IsSuccessStatusCode)
+        if (body.IsNullOrEmpty())
         {
             return null;
         }
+        try
+        {
+            var doc = JsonDocument.Parse(body);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object)
+            {
+                if (doc.RootElement.TryGetProperty("error", out var err) && err.ValueKind == JsonValueKind.String)
+                {
+                    return err.GetString();
+                }
+                if (doc.RootElement.TryGetProperty("message", out var msg) && msg.ValueKind == JsonValueKind.String)
+                {
+                    return msg.GetString();
+                }
+            }
+        }
+        catch
+        {
+        }
+        return body;
+    }
+
+    private async Task<(AuthResponse? response, string? error)> PostAuthAsync(string baseUri, string path, string email, string password)
+    {
+        var uri = $"{baseUri.TrimEnd('/')}/{path.TrimStart('/')}";
+        var payload = new AuthRequest { email = email, password = password };
+        var json = JsonSerializer.Serialize(payload);
+        using var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        using var response = await _httpClient.PostAsync(uri, content);
         var body = await response.Content.ReadAsStringAsync();
-        return JsonUtils.Deserialize<AuthResponse>(body);
+        if (!response.IsSuccessStatusCode)
+        {
+            return (null, ExtractServerError(body) ?? $"HTTP {(int)response.StatusCode}");
+        }
+        return (JsonUtils.Deserialize<AuthResponse>(body), null);
     }
 
     public async Task<bool> RegisterAsync(Config config, string email, string password)
@@ -48,12 +76,16 @@ public class VpnApiService
         {
             return false;
         }
-        var response = await PostAuthAsync(baseUri, "v1/vpn/auth/register", email, password);
+        var (response, error) = await PostAuthAsync(baseUri, "v1/vpn/auth/register", email, password);
         if (response?.ok == true && response.access_token.IsNotEmpty())
         {
             config.VpnItem.AccessToken = response.access_token;
             config.VpnItem.ExpiresAt = ParseExpiresAt(response.expires_at);
             return true;
+        }
+        if (error.IsNotEmpty())
+        {
+            NoticeManager.Instance.SendMessageEx(error);
         }
         return false;
     }
@@ -64,12 +96,16 @@ public class VpnApiService
         {
             return false;
         }
-        var response = await PostAuthAsync(baseUri, "v1/vpn/auth/login", email, password);
+        var (response, error) = await PostAuthAsync(baseUri, "v1/vpn/auth/login", email, password);
         if (response?.ok == true && response.access_token.IsNotEmpty())
         {
             config.VpnItem.AccessToken = response.access_token;
             config.VpnItem.ExpiresAt = ParseExpiresAt(response.expires_at);
             return true;
+        }
+        if (error.IsNotEmpty())
+        {
+            NoticeManager.Instance.SendMessageEx(error);
         }
         return false;
     }
@@ -92,11 +128,15 @@ public class VpnApiService
             return -1;
         }
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var nodeUri = $"{baseUri.TrimEnd('/')}/v1/vpn/nodes";
         try
         {
-            using var response = await _httpClient.GetAsync($"{baseUri.TrimEnd('/')}/v1/vpn/nodes");
+            using var response = await _httpClient.GetAsync(nodeUri);
             if (!response.IsSuccessStatusCode)
             {
+                var body = await response.Content.ReadAsStringAsync();
+                var err = ExtractServerError(body) ?? $"HTTP {(int)response.StatusCode}";
+                NoticeManager.Instance.SendMessageEx(err);
                 return -1;
             }
             var strData = await response.Content.ReadAsStringAsync();
