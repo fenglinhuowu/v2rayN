@@ -36,6 +36,7 @@ public class SimpleViewLocator : IDataTemplate
         RegisterViewFactory<SubEditViewModel, SubEditWindow>();
         RegisterViewFactory<SubSettingViewModel, SubSettingWindow>();
         RegisterViewFactory<ThemeSettingViewModel, ThemeSettingView>();
+        RegisterViewFactory<VpnAuthViewModel, VpnAuthWindow>();
     }
 
     public static SimpleViewLocator Instance => _instance.Value;

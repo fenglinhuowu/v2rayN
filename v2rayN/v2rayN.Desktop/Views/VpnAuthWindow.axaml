@@ -1,0 +1,75 @@
+<Window
+    x:Class="v2rayN.Desktop.Views.VpnAuthWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resx="clr-namespace:ServiceLib.Resx;assembly=ServiceLib"
+    xmlns:vms="clr-namespace:ServiceLib.ViewModels;assembly=ServiceLib"
+    Title="{x:Static resx:ResUI.menuVpn}"
+    Width="420"
+    Height="260"
+    x:DataType="vms:VpnAuthViewModel"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="mc">
+
+    <DockPanel Margin="{StaticResource Margin8}">
+        <StackPanel
+            Margin="{StaticResource Margin4}"
+            DockPanel.Dock="Bottom"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+
+            <Button
+                x:Name="btnRegister"
+                Width="100"
+                Margin="{StaticResource MarginLr4}"
+                Content="{x:Static resx:ResUI.menuVpnRegister}" />
+
+            <Button
+                x:Name="btnLogin"
+                Width="100"
+                Margin="{StaticResource MarginLr4}"
+                Content="{x:Static resx:ResUI.menuVpnLogin}" />
+
+            <Button
+                x:Name="btnCancel"
+                Width="100"
+                Margin="{StaticResource Margin4}"
+                Content="{x:Static resx:ResUI.TbCancel}" />
+        </StackPanel>
+
+        <Grid Margin="{StaticResource Margin4}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                Margin="{StaticResource Margin4}"
+                Text="{x:Static resx:ResUI.Email}" />
+            <TextBox
+                x:Name="txtEmail"
+                Grid.Row="1"
+                Margin="{StaticResource Margin4}"
+                Width="360"
+                PlaceholderText="{x:Static resx:ResUI.Email}"
+                Text="{Binding Email, Mode=TwoWay}" />
+
+            <TextBlock
+                Grid.Row="2"
+                Margin="{StaticResource Margin4}"
+                Text="{x:Static resx:ResUI.FillPassword}" />
+            <TextBox
+                x:Name="pwdPassword"
+                Grid.Row="3"
+                Margin="{StaticResource Margin4}"
+                Width="360"
+                PasswordChar="*"
+                Text="{Binding Password, Mode=TwoWay}" />
+        </Grid>
+    </DockPanel>
+</Window>

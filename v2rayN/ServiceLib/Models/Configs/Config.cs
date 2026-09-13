@@ -18,6 +18,7 @@ public class Config
     public GrpcItem GrpcItem { get; set; }
     public RoutingBasicItem RoutingBasicItem { get; set; }
     public GUIItem GuiItem { get; set; }
+    public VpnItem VpnItem { get; set; }
     public MsgUIItem MsgUIItem { get; set; }
     public UIItem UiItem { get; set; }
     public ConstItem ConstItem { get; set; }

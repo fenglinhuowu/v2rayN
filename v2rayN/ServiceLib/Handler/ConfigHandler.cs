@@ -95,6 +95,11 @@ public static class ConfigHandler
             EnableLegacyProtect = true,
         };
         config.GuiItem ??= new();
+        config.VpnItem ??= new();
+        if (config.VpnItem.VpnSubId.IsNullOrEmpty())
+        {
+            config.VpnItem.VpnSubId = Guid.NewGuid().ToString("N");
+        }
         if (!Global.RootCertProviders.Contains(config.GuiItem.RootCertProvider))
         {
             config.GuiItem.RootCertProvider = Global.RootCertProviders.First();

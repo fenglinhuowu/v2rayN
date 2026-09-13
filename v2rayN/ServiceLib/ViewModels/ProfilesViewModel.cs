@@ -43,6 +43,9 @@ public partial class ProfilesViewModel : MyReactiveObject
     [Reactive]
     public partial string ServerFilter { get; set; }
 
+    [Reactive]
+    public partial bool VpnLoggedIn { get; set; }
+
     #endregion ObservableCollection
 
     #region Menu
@@ -88,6 +91,10 @@ public partial class ProfilesViewModel : MyReactiveObject
     public ReactiveCommand<RxVoid, RxVoid> AddSubCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> EditSubCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> DeleteSubCmd { get; }
+
+    //VPN Auth
+    public ReactiveCommand<RxVoid, RxVoid> VpnLoginCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> VpnGetNodesCmd { get; }
 
     #endregion Menu
 
@@ -239,6 +246,10 @@ public partial class ProfilesViewModel : MyReactiveObject
             await DeleteSubAsync();
         });
 
+        //VPN Auth
+        VpnLoginCmd = ReactiveCommand.CreateFromTask(async () => await OpenVpnAuthAsync());
+        VpnGetNodesCmd = ReactiveCommand.CreateFromTask(async () => await VpnGetNodesAsync());
+
         #endregion WhenAnyValue && ReactiveCommand
 
         #region AppEvents
@@ -261,6 +272,7 @@ public partial class ProfilesViewModel : MyReactiveObject
 
         await RefreshSubscriptions();
         //await RefreshServers();
+        VpnLoggedIn = !VpnApiService.Instance.IsTokenExpired(_config);
     }
 
     #endregion Init
@@ -906,4 +918,31 @@ public partial class ProfilesViewModel : MyReactiveObject
     }
 
     #endregion Subscription
+
+    #region VPN Auth
+
+    private async Task OpenVpnAuthAsync()
+    {
+        var viewModel = new VpnAuthViewModel();
+        await AppManager.Instance.WindowDialog.ShowDialogAsync(viewModel);
+        VpnLoggedIn = !VpnApiService.Instance.IsTokenExpired(_config);
+    }
+
+    private async Task VpnGetNodesAsync()
+    {
+        if (VpnApiService.Instance.IsTokenExpired(_config))
+        {
+            await OpenVpnAuthAsync();
+        }
+        if (VpnApiService.Instance.IsTokenExpired(_config))
+        {
+            return;
+        }
+        var count = await VpnApiService.Instance.GetNodesAsync(_config);
+        NoticeManager.Instance.SendMessageEx(count > 0 ? $"{ResUI.OperationSuccess} ({count})" : ResUI.OperationFailed);
+        VpnLoggedIn = count > 0;
+        Reload();
+    }
+
+    #endregion VPN Auth
 }

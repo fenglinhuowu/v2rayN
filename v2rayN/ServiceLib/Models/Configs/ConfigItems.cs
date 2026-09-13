@@ -78,6 +78,15 @@ public class GUIItem
 }
 
 [Serializable]
+public class VpnItem
+{
+    public string ApiBaseUrl { get; set; } = string.Empty;
+    public string? AccessToken { get; set; }
+    public long ExpiresAt { get; set; }
+    public string? VpnSubId { get; set; }
+}
+
+[Serializable]
 public class MsgUIItem
 {
     public string? MainMsgFilter { get; set; }

@@ -156,6 +156,9 @@
   <data name="FillPassword" xml:space="preserve">
     <value>Please enter the password.</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
   <data name="FillServerAddress" xml:space="preserve">
     <value>Please enter the address.</value>
   </data>
@@ -1886,5 +1889,23 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   </data>
   <data name="TbSettingsMux4Ray" xml:space="preserve">
     <value>Xray Mux setting</value>
+  </data>
+  <data name="menuVpn" xml:space="preserve">
+    <value>VPN Auth</value>
+  </data>
+  <data name="menuVpnLogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="menuVpnRegister" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="menuVpnGetNodes" xml:space="preserve">
+    <value>Get Nodes</value>
+  </data>
+  <data name="PleaseFillEmailPassword" xml:space="preserve">
+    <value>Please fill email and password</value>
+  </data>
+  <data name="PleaseFillCorrectPassword" xml:space="preserve">
+    <value>Please fill a 6-digit password</value>
   </data>
 </root>

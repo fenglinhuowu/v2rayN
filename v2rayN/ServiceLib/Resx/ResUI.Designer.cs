@@ -5363,5 +5363,41 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("UpgradeAppNotExistTip", resourceCulture);
             }
         }
+        
+        public static string menuVpn {
+            get {
+                return ResourceManager.GetString("menuVpn", resourceCulture);
+            }
+        }
+        public static string menuVpnLogin {
+            get {
+                return ResourceManager.GetString("menuVpnLogin", resourceCulture);
+            }
+        }
+        public static string menuVpnRegister {
+            get {
+                return ResourceManager.GetString("menuVpnRegister", resourceCulture);
+            }
+        }
+        public static string menuVpnGetNodes {
+            get {
+                return ResourceManager.GetString("menuVpnGetNodes", resourceCulture);
+            }
+        }
+        public static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        public static string PleaseFillEmailPassword {
+            get {
+                return ResourceManager.GetString("PleaseFillEmailPassword", resourceCulture);
+            }
+        }
+        public static string PleaseFillCorrectPassword {
+            get {
+                return ResourceManager.GetString("PleaseFillCorrectPassword", resourceCulture);
+            }
+        }
     }
 }

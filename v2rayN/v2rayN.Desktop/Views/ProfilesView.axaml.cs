@@ -79,6 +79,9 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
             this.BindCommand(ViewModel, vm => vm.RemoveInvalidServerResultCmd, v => v.menuRemoveInvalidServerResult).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.FastRealPingCmd, v => v.btnFastRealPing).DisposeWith(disposables);
 
+            this.BindCommand(ViewModel, vm => vm.VpnLoginCmd, v => v.btnVpnLogin).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.VpnGetNodesCmd, v => v.btnVpnGetNodes).DisposeWith(disposables);
+
             //servers export
             this.BindCommand(ViewModel, vm => vm.Export2ClientConfigCmd, v => v.menuExport2ClientConfig).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.Export2ClientConfigClipboardCmd, v => v.menuExport2ClientConfigClipboard).DisposeWith(disposables);
