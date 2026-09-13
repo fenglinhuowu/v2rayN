@@ -48,7 +48,6 @@
                             Command="{Binding NotifyLeftClickCmd}"
                             Header="{x:Static resx:ResUI.menuShowOrHideMainWindow}"
                             IsVisible="{Binding BlIsNonWindows}" />
-                        <NativeMenuItem Command="{Binding CopyProxyCmdToClipboardCmd}" Header="{x:Static resx:ResUI.menuCopyProxyCmdToClipboard}" />
                         <NativeMenuItemSeparator />
                         <NativeMenuItem
                             Command="{Binding SystemProxyClearCmd}"
@@ -71,10 +70,6 @@
                             IsChecked="{Binding BlSystemProxyPac}"
                             IsVisible="{Binding BlSystemProxyPacVisible}"
                             ToggleType="Radio" />
-                        <NativeMenuItemSeparator />
-                        <NativeMenuItem Click="MenuAddServerViaClipboardClick" Header="{x:Static resx:ResUI.menuAddServerViaClipboard}" />
-                        <NativeMenuItem Command="{Binding SubUpdateCmd}" Header="{x:Static resx:ResUI.menuSubUpdate}" />
-                        <NativeMenuItem Command="{Binding SubUpdateViaProxyCmd}" Header="{x:Static resx:ResUI.menuSubUpdateViaProxy}" />
                         <NativeMenuItemSeparator />
                         <NativeMenuItem Click="MenuExit_Click" Header="{x:Static resx:ResUI.menuExit}" />
                     </NativeMenu>

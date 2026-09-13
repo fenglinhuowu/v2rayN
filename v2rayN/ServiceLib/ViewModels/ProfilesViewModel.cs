@@ -95,6 +95,7 @@ public partial class ProfilesViewModel : MyReactiveObject
     //VPN Auth
     public ReactiveCommand<RxVoid, RxVoid> VpnLoginCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> VpnGetNodesCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> VpnExitCmd { get; }
 
     #endregion Menu
 
@@ -249,6 +250,7 @@ public partial class ProfilesViewModel : MyReactiveObject
         //VPN Auth
         VpnLoginCmd = ReactiveCommand.CreateFromTask(async () => await OpenVpnAuthAsync());
         VpnGetNodesCmd = ReactiveCommand.CreateFromTask(async () => await VpnGetNodesAsync());
+        VpnExitCmd = ReactiveCommand.CreateFromTask(async () => await AppManager.Instance.AppExitAsync(true));
 
         #endregion WhenAnyValue && ReactiveCommand
 
