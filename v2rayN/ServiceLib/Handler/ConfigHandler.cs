@@ -96,6 +96,10 @@ public static class ConfigHandler
         };
         config.GuiItem ??= new();
         config.VpnItem ??= new();
+        if (config.VpnItem.ApiBaseUrl.IsNullOrEmpty())
+        {
+            config.VpnItem.ApiBaseUrl = Global.VpnApiBaseUrl;
+        }
         if (config.VpnItem.VpnSubId.IsNullOrEmpty())
         {
             config.VpnItem.VpnSubId = Guid.NewGuid().ToString("N");
