@@ -49,7 +49,13 @@ public class VpnApiService
             return false;
         }
         var response = await PostAuthAsync(baseUri, "v1/vpn/auth/register", email, password);
-        return response?.ok == true;
+        if (response?.ok == true && response.access_token.IsNotEmpty())
+        {
+            config.VpnItem.AccessToken = response.access_token;
+            config.VpnItem.ExpiresAt = ParseExpiresAt(response.expires_at);
+            return true;
+        }
+        return false;
     }
 
     public async Task<bool> LoginAsync(Config config, string email, string password)
@@ -62,7 +68,7 @@ public class VpnApiService
         if (response?.ok == true && response.access_token.IsNotEmpty())
         {
             config.VpnItem.AccessToken = response.access_token;
-            config.VpnItem.ExpiresAt = response.expires_at;
+            config.VpnItem.ExpiresAt = ParseExpiresAt(response.expires_at);
             return true;
         }
         return false;
@@ -104,6 +110,23 @@ public class VpnApiService
         }
     }
 
+    private static long ParseExpiresAt(string? value)
+    {
+        if (value.IsNullOrEmpty())
+        {
+            return 0;
+        }
+        if (long.TryParse(value, out var unix))
+        {
+            return unix;
+        }
+        if (DateTimeOffset.TryParse(value, out var dto))
+        {
+            return dto.ToUnixTimeSeconds();
+        }
+        return 0;
+    }
+
     private class AuthRequest
     {
         public string? email { get; set; }
@@ -114,7 +137,7 @@ public class VpnApiService
     {
         public bool ok { get; set; }
         public string? access_token { get; set; }
-        public long expires_at { get; set; }
+        public string? expires_at { get; set; }
         public UserInfo? user { get; set; }
     }
 
