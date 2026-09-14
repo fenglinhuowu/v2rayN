@@ -17,8 +17,8 @@
     <UserControl.Resources>
         <conv:DelayColorConverter x:Key="DelayColorConverter" />
     </UserControl.Resources>
-    <Grid VerticalAlignment="Top">
-        <Grid RowDefinitions="Auto,Auto">
+    <Grid>
+        <Grid RowDefinitions="Auto,*">
             <DockPanel Grid.Row="0" Margin="2">
                 <StackPanel
                     DockPanel.Dock="Right"
@@ -164,8 +164,13 @@
             <ListBox
                 x:Name="lstProfiles"
                 Grid.Row="1"
-                Margin="{StaticResource Margin4}"
+                Margin="0,4"
                 ItemsSource="{Binding ProfileItems}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem
@@ -260,11 +265,12 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border
-                            Margin="{StaticResource Margin4}"
+                            Margin="{StaticResource Margin2}"
                             Padding="{StaticResource Margin8}"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Theme="{DynamicResource CardBorder}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Label
                                     Theme="{DynamicResource TagLabel}"
                                     Classes="Solid Red"
