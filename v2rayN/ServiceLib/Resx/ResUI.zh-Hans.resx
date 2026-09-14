@@ -492,6 +492,9 @@
   <data name="menuClearServerStatistics" xml:space="preserve">
     <value>清除所有服务统计数据</value>
   </data>
+  <data name="menuClearAllServers" xml:space="preserve">
+    <value>清空节点</value>
+  </data>
   <data name="menuRealPingServer" xml:space="preserve">
     <value>测试真连接延迟 (多选)</value>
   </data>

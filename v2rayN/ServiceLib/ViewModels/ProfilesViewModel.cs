@@ -543,6 +543,29 @@ public partial class ProfilesViewModel : MyReactiveObject
         }
     }
 
+    public async Task ClearAllServersAsync()
+    {
+        var lstAll = await AppManager.Instance.ProfileItems(_config.SubIndexId);
+        if (lstAll == null || lstAll.Count == 0)
+        {
+            return;
+        }
+        if (await ShowYesNoInteraction.HandleSafe(ResUI.RemoveServer) == false)
+        {
+            return;
+        }
+        var exists = lstAll.Exists(t => t.IndexId == _config.IndexId);
+
+        await ConfigHandler.RemoveServers(_config, lstAll);
+        NoticeManager.Instance.Enqueue(ResUI.OperationSuccess);
+        ProfileItems.Clear();
+        await RefreshServers();
+        if (exists)
+        {
+            Reload();
+        }
+    }
+
     private async Task RemoveDuplicateServer()
     {
         if (await ShowYesNoInteraction.HandleSafe(ResUI.RemoveServer) == false)

@@ -495,6 +495,9 @@
   <data name="menuClearServerStatistics" xml:space="preserve">
     <value>Clear all service statistics</value>
   </data>
+  <data name="menuClearAllServers" xml:space="preserve">
+    <value>Clear all servers</value>
+  </data>
   <data name="menuRealPingServer" xml:space="preserve">
     <value>Test real delay</value>
   </data>

@@ -68,6 +68,8 @@ public partial class MainWindowViewModel : MyReactiveObject
 
     public ReactiveCommand<RxVoid, RxVoid> ReloadCmd { get; }
 
+    public ReactiveCommand<RxVoid, RxVoid> ClearAllServersCmd { get; }
+
     [Reactive]
     public partial bool BlReloadEnabled { get; set; }
 
@@ -233,6 +235,11 @@ public partial class MainWindowViewModel : MyReactiveObject
         ReloadCmd = ReactiveCommand.CreateFromTask(async () =>
         {
             await Reload();
+        });
+
+        ClearAllServersCmd = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await ProfilesViewModel.ClearAllServersAsync();
         });
 
         RegionalPresetDefaultCmd = ReactiveCommand.CreateFromTask(async () =>
