@@ -943,6 +943,15 @@ namespace ServiceLib.Resx {
         }
         
         /// <summary>
+        ///   查找类似 Clear all servers 的本地化字符串。
+        /// </summary>
+        public static string menuClearAllServers {
+            get {
+                return ResourceManager.GetString("menuClearAllServers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Close 的本地化字符串。
         /// </summary>
         public static string menuClose {
