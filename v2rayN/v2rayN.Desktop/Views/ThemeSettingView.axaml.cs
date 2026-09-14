@@ -30,7 +30,7 @@ public partial class ThemeSettingView : ReactiveUserControl<ThemeSettingViewMode
 
             var statusBarViewModel = StatusBarViewModel.Instance;
             this.Bind(statusBarViewModel, vm => vm.SystemProxySelected, v => v.cmbSystemProxy.SelectedIndex).DisposeWith(disposables);
-            this.OneWayBind(statusBarViewModel, vm => vm.RoutingItems, v => v.cmbRoutings2.ItemsSource).DisposeWith(disposables);
+            cmbRoutings2.ItemsSource = statusBarViewModel.RoutingItems;
             this.Bind(statusBarViewModel, vm => vm.SelectedRouting, v => v.cmbRoutings2.SelectedItem).DisposeWith(disposables);
         });
     }
