@@ -33,6 +33,17 @@ public class CoreManager
                 FileUtils.CopyDirectory(fromPath, toPath, true, false);
             }
         }
+        else
+        {
+            var localAppDataBin = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "v2rayN", "bin");
+            var currentBin = Utils.GetBinPath("");
+            if (localAppDataBin != currentBin && Directory.Exists(localAppDataBin))
+            {
+                FileUtils.CopyDirectory(localAppDataBin, currentBin, true, false);
+            }
+        }
 
         if (Utils.IsNonWindows())
         {
