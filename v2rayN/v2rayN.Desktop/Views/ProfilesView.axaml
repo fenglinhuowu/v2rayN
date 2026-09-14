@@ -164,13 +164,15 @@
             <ListBox
                 x:Name="lstProfiles"
                 Grid.Row="1"
-                Margin="0,4"
+                Margin="4,2"
                 ItemsSource="{Binding ProfileItems}">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="2" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0,1" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListBox.Styles>
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem
@@ -265,37 +267,41 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border
-                            Margin="{StaticResource Margin2}"
-                            Padding="{StaticResource Margin8}"
+                            Padding="8,6"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Theme="{DynamicResource CardBorder}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                <Label
-                                    Theme="{DynamicResource TagLabel}"
-                                    Classes="Solid Red"
-                                    Content="{x:Static resx:ResUI.TipActiveServer}"
-                                    IsVisible="{Binding IsActive}"
-                                    Margin="{StaticResource MarginLr4}"
-                                    VerticalAlignment="Center" />
-                                <TextBlock
-                                    Margin="{StaticResource MarginLr4}"
+                            <Grid ColumnDefinitions="*,Auto">
+                                <DockPanel
+                                    Grid.Column="0"
+                                    Margin="0,0,8,0"
+                                    LastChildFill="True">
+                                    <Label
+                                        DockPanel.Dock="Left"
+                                        Margin="0,0,6,0"
+                                        VerticalAlignment="Center"
+                                        Theme="{DynamicResource TagLabel}"
+                                        Classes="Solid Red"
+                                        Content="{x:Static resx:ResUI.TipActiveServer}"
+                                        IsVisible="{Binding IsActive}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Remarks}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap" />
+                                </DockPanel>
+                                <StackPanel
+                                    Grid.Column="1"
                                     VerticalAlignment="Center"
-                                    Text="{Binding ConfigType}" />
-                                <TextBlock
-                                    Margin="{StaticResource MarginLr4}"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding Remarks}" />
-                                <TextBlock
-                                    Margin="{StaticResource MarginLr4}"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding DelayVal}"
-                                    Foreground="{Binding Delay, Converter={StaticResource DelayColorConverter}}" />
-                                <TextBlock
-                                    Margin="{StaticResource MarginLr4}"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding SpeedVal}" />
-                            </StackPanel>
+                                    Orientation="Horizontal"
+                                    Spacing="8">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Text="{Binding DelayVal}"
+                                        Foreground="{Binding Delay, Converter={StaticResource DelayColorConverter}}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding SpeedVal}" />
+                                </StackPanel>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

@@ -51,9 +51,9 @@
                             VerticalAlignment="Center"
                             Text="{x:Static resx:ResUI.menuRouting}" />
                         <ComboBox
-                            x:Name="cmbRoutings2"
-                            Margin="{StaticResource Margin4}"
-                            HorizontalAlignment="Center" />
+                             x:Name="cmbRoutings2"
+                             Margin="{StaticResource Margin4}"
+                             HorizontalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
