@@ -81,7 +81,11 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
 
             this.BindCommand(ViewModel, vm => vm.VpnLoginCmd, v => v.btnVpnLogin).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.VpnGetNodesCmd, v => v.btnVpnGetNodes).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.VpnClearNodesCmd, v => v.btnVpnClearNodes).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.VpnExitCmd, v => v.btnVpnExit).DisposeWith(disposables);
+
+            var statusBarViewModel = StatusBarViewModel.Instance;
+            this.Bind(statusBarViewModel, vm => vm.EnableTun, v => v.togEnableTun.IsChecked).DisposeWith(disposables);
 
             //nodes list right-click menu disabled
             lstProfiles.ContextMenu = null;

@@ -35,6 +35,7 @@
                 Margin="{StaticResource MarginLr8}"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left"
+                IsVisible="False"
                 Orientation="Horizontal">
                 <TextBlock
                     Margin="{StaticResource MarginLr8}"
@@ -48,9 +49,11 @@
             </StackPanel>
 
             <StackPanel
+                x:Name="spProxyRouting"
                 Margin="{StaticResource MarginLr8}"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left"
+                IsVisible="False"
                 Orientation="Horizontal">
                 <ComboBox
                     x:Name="cmbSystemProxy"

@@ -95,6 +95,7 @@ public partial class ProfilesViewModel : MyReactiveObject
     //VPN Auth
     public ReactiveCommand<RxVoid, RxVoid> VpnLoginCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> VpnGetNodesCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> VpnClearNodesCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> VpnExitCmd { get; }
 
     #endregion Menu
@@ -250,6 +251,7 @@ public partial class ProfilesViewModel : MyReactiveObject
         //VPN Auth
         VpnLoginCmd = ReactiveCommand.CreateFromTask(async () => await OpenVpnAuthAsync());
         VpnGetNodesCmd = ReactiveCommand.CreateFromTask(async () => await VpnGetNodesAsync());
+        VpnClearNodesCmd = ReactiveCommand.CreateFromTask(async () => await ClearAllServersAsync());
         VpnExitCmd = ReactiveCommand.CreateFromTask(async () => await AppManager.Instance.AppExitAsync(true));
 
         #endregion WhenAnyValue && ReactiveCommand
@@ -545,7 +547,12 @@ public partial class ProfilesViewModel : MyReactiveObject
 
     public async Task ClearAllServersAsync()
     {
-        var lstAll = await AppManager.Instance.ProfileItems(_config.SubIndexId);
+        List<ProfileItem>? lstAll = null;
+        if (ProfileItems.Count > 0)
+        {
+            lstAll = await AppManager.Instance.GetProfileItemsOrderedByIndexIds(ProfileItems.Select(p => p.IndexId));
+        }
+        lstAll ??= await AppManager.Instance.ProfileItems(_config.SubIndexId);
         if (lstAll == null || lstAll.Count == 0)
         {
             return;
@@ -963,10 +970,20 @@ public partial class ProfilesViewModel : MyReactiveObject
         {
             return;
         }
+
         var count = await VpnApiService.Instance.GetNodesAsync(_config);
-        NoticeManager.Instance.SendMessageEx(count > 0 ? $"{ResUI.OperationSuccess} ({count})" : ResUI.OperationFailed);
-        VpnLoggedIn = count > 0;
-        Reload();
+        VpnLoggedIn = !VpnApiService.Instance.IsTokenExpired(_config);
+        if (count > 0)
+        {
+            _config.SubIndexId = string.Empty;
+            await ConfigHandler.SaveConfig(_config);
+            await RefreshServers();
+            NoticeManager.Instance.SendMessageEx($"{ResUI.OperationSuccess} ({count})");
+            Reload();
+            return;
+        }
+
+        NoticeManager.Instance.SendMessageEx(ResUI.OperationFailed);
     }
 
     #endregion VPN Auth

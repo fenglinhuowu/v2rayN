@@ -34,6 +34,31 @@
                         <TextBlock
                             Margin="{StaticResource Margin4}"
                             VerticalAlignment="Center"
+                            Text="{x:Static resx:ResUI.menuSystemproxy}" />
+                        <ComboBox
+                            x:Name="cmbSystemProxy"
+                            Margin="{StaticResource Margin4}"
+                            HorizontalAlignment="Center">
+                            <ComboBoxItem Content="{x:Static resx:ResUI.menuSystemProxyClear}" />
+                            <ComboBoxItem Content="{x:Static resx:ResUI.menuSystemProxySet}" />
+                            <ComboBoxItem Content="{x:Static resx:ResUI.menuSystemProxyNothing}" />
+                            <ComboBoxItem Content="{x:Static resx:ResUI.menuSystemProxyPac}" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="{StaticResource Margin4}"
+                            VerticalAlignment="Center"
+                            Text="{x:Static resx:ResUI.menuRouting}" />
+                        <ComboBox
+                            x:Name="cmbRoutings2"
+                            Margin="{StaticResource Margin4}"
+                            HorizontalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="{StaticResource Margin4}"
+                            VerticalAlignment="Center"
                             Text="{x:Static resx:ResUI.TbSettingsTheme}" />
                         <ComboBox
                             x:Name="cmbCurrentTheme"

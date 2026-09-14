@@ -55,6 +55,93 @@ public class VpnApiService
         return body;
     }
 
+    private static (string? content, string? error) ExtractNodesContent(string body)
+    {
+        if (body.IsNullOrEmpty())
+        {
+            return (null, "empty response");
+        }
+
+        var trimmed = body.Trim();
+        if (!trimmed.StartsWith('{') && !trimmed.StartsWith('['))
+        {
+            return (body, null);
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            var root = doc.RootElement;
+            if (root.ValueKind == JsonValueKind.Object
+                && root.TryGetProperty("ok", out var okProp)
+                && okProp.ValueKind is JsonValueKind.False or JsonValueKind.True
+                && !okProp.GetBoolean())
+            {
+                return (null, ExtractServerError(body) ?? "request failed");
+            }
+
+            var content = ExtractSubscriptionFromJson(root);
+            if (content.IsNotEmpty())
+            {
+                return (content, null);
+            }
+        }
+        catch
+        {
+        }
+
+        return (null, ExtractServerError(body) ?? "invalid nodes response");
+    }
+
+    private static string ExtractSubscriptionFromJson(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.String:
+                return element.GetString() ?? string.Empty;
+
+            case JsonValueKind.Array:
+                var lines = new List<string>();
+                foreach (var item in element.EnumerateArray())
+                {
+                    var line = ExtractSubscriptionFromJson(item);
+                    if (line.IsNotEmpty())
+                    {
+                        lines.Add(line);
+                    }
+                }
+                return string.Join(Environment.NewLine, lines);
+
+            case JsonValueKind.Object:
+                foreach (var key in new[] { "uri", "url", "link", "share_url", "shareUrl", "node", "content", "subscription" })
+                {
+                    if (element.TryGetProperty(key, out var value))
+                    {
+                        var line = ExtractSubscriptionFromJson(value);
+                        if (line.IsNotEmpty())
+                        {
+                            return line;
+                        }
+                    }
+                }
+
+                foreach (var key in new[] { "nodes", "links", "uris", "data", "content", "subscription" })
+                {
+                    if (element.TryGetProperty(key, out var nested))
+                    {
+                        var content = ExtractSubscriptionFromJson(nested);
+                        if (content.IsNotEmpty())
+                        {
+                            return content;
+                        }
+                    }
+                }
+                break;
+        }
+
+        return string.Empty;
+    }
+
     private async Task<(AuthResponse? response, string? error)> PostAuthAsync(string baseUri, string path, string email, string password)
     {
         var uri = $"{baseUri.TrimEnd('/')}/{path.TrimStart('/')}";
@@ -132,17 +219,28 @@ public class VpnApiService
         try
         {
             using var response = await _httpClient.GetAsync(nodeUri);
+            var responseBody = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                var body = await response.Content.ReadAsStringAsync();
-                var err = ExtractServerError(body) ?? $"HTTP {(int)response.StatusCode}";
+                var err = ExtractServerError(responseBody) ?? $"HTTP {(int)response.StatusCode}";
                 NoticeManager.Instance.SendMessageEx(err);
                 return -1;
             }
-            var strData = await response.Content.ReadAsStringAsync();
+            var (strData, parseError) = ExtractNodesContent(responseBody);
+            if (strData.IsNullOrEmpty())
+            {
+                NoticeManager.Instance.SendMessageEx(parseError ?? ResUI.OperationFailed);
+                return -1;
+            }
+
             var subid = config.VpnItem.VpnSubId ?? Guid.NewGuid().ToString("N");
             config.VpnItem.VpnSubId = subid;
-            return await ConfigHandler.AddBatchServers(config, strData, subid, true);
+            var count = await ConfigHandler.AddBatchServers(config, strData, subid, true);
+            if (count < 1)
+            {
+                NoticeManager.Instance.SendMessageEx(ResUI.OperationFailed);
+            }
+            return count;
         }
         finally
         {

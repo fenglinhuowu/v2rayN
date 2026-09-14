@@ -17,12 +17,31 @@
     <UserControl.Resources>
         <conv:DelayColorConverter x:Key="DelayColorConverter" />
     </UserControl.Resources>
-    <Grid>
-        <DockPanel>
-            <DockPanel Margin="2" DockPanel.Dock="Top">
-                <ContentControl
-                    x:Name="conTheme"
-                    DockPanel.Dock="Right" />
+    <Grid VerticalAlignment="Top">
+        <Grid RowDefinitions="Auto,Auto">
+            <DockPanel Grid.Row="0" Margin="2">
+                <StackPanel
+                    DockPanel.Dock="Right"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center">
+                    <StackPanel
+                        x:Name="spEnableTun"
+                        Margin="{StaticResource MarginLr4}"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Margin="{StaticResource MarginLr4}"
+                            VerticalAlignment="Center"
+                            Text="Tun" />
+                        <ToggleSwitch
+                            x:Name="togEnableTun"
+                            Margin="{StaticResource Margin4}"
+                            Theme="{DynamicResource SimpleToggleSwitch}" />
+                    </StackPanel>
+                    <ContentControl
+                        x:Name="conTheme"
+                        Margin="{StaticResource MarginLr4}" />
+                </StackPanel>
                 <WrapPanel>
                     <ListBox
                     x:Name="lstGroup"
@@ -109,7 +128,8 @@
                     <Button
                         x:Name="btnVpnLogin"
                         Margin="{StaticResource MarginLr4}"
-                        ToolTip.Tip="{x:Static resx:ResUI.menuVpnLogin}">
+                        ToolTip.Tip="{x:Static resx:ResUI.menuVpnLogin}"
+                        IsVisible="{Binding !VpnLoggedIn}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <PathIcon Data="{StaticResource SemiIconUser}" Margin="{StaticResource MarginLr4}" />
                             <TextBlock Text="{x:Static resx:ResUI.menuVpnLogin}" VerticalAlignment="Center" />
@@ -118,21 +138,24 @@
                     <Button
                         x:Name="btnVpnGetNodes"
                         Margin="{StaticResource MarginLr4}"
+                        Classes="IconButton Success"
                         ToolTip.Tip="{x:Static resx:ResUI.menuVpnGetNodes}"
                         IsVisible="{Binding VpnLoggedIn}">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <PathIcon Data="{StaticResource SemiIconRefresh}" Margin="{StaticResource MarginLr4}" />
-                            <TextBlock Text="{x:Static resx:ResUI.menuVpnGetNodes}" VerticalAlignment="Center" />
-                        </StackPanel>
+                        <PathIcon Data="{StaticResource SemiIconRefresh}" />
+                    </Button>
+                    <Button
+                        x:Name="btnVpnClearNodes"
+                        Margin="{StaticResource MarginLr4}"
+                        Classes="IconButton Success"
+                        ToolTip.Tip="{x:Static resx:ResUI.menuClearAllServers}">
+                        <PathIcon Data="{StaticResource SemiIconDelete}" />
                     </Button>
                     <Button
                         x:Name="btnVpnExit"
                         Margin="{StaticResource MarginLr4}"
+                        Classes="IconButton Success"
                         ToolTip.Tip="{x:Static resx:ResUI.menuExit}">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <PathIcon Data="{StaticResource SemiIconClose}" Margin="{StaticResource MarginLr4}" />
-                            <TextBlock Text="{x:Static resx:ResUI.menuExit}" VerticalAlignment="Center" />
-                        </StackPanel>
+                        <PathIcon Data="{StaticResource SemiIconClose}" />
                     </Button>
                 </StackPanel>
             </WrapPanel>
@@ -140,6 +163,7 @@
 
             <ListBox
                 x:Name="lstProfiles"
+                Grid.Row="1"
                 Margin="{StaticResource Margin4}"
                 ItemsSource="{Binding ProfileItems}">
                 <ListBox.ContextMenu>
@@ -270,6 +294,6 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </DockPanel>
+        </Grid>
     </Grid>
 </UserControl>

@@ -80,7 +80,7 @@ public partial class StatusBarView : ReactiveUserControl<StatusBarViewModel>
         var password = obj?.ToString();
         if (password.IsNullOrEmpty())
         {
-            togEnableTun.IsChecked = false;
+            ViewModel!.EnableTun = false;
             return password;
         }
 
