@@ -393,7 +393,7 @@ public partial class CheckUpdateViewModel : MyReactiveObject
                 var filesList = new DirectoryInfo(toPath).GetFiles().Select(u => u.FullName).ToList();
                 foreach (var file in filesList)
                 {
-                    await Utils.SetLinuxChmod(Path.Combine(toPath, coreTypeStr.ToLower()));
+                    await Utils.SetLinuxChmod(file);
                 }
             }
 
