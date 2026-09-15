@@ -1069,6 +1069,15 @@ namespace ServiceLib.Resx {
         }
         
         /// <summary>
+        ///   查找类似 关闭软件 的本地化字符串。
+        /// </summary>
+        public static string menuCloseApp {
+            get {
+                return ResourceManager.GetString("menuCloseApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Are you sure you want to exit? 的本地化字符串。
         /// </summary>
         public static string menuExitTips {
@@ -5393,6 +5402,15 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("menuVpnGetNodes", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 退出登录.
+        /// </summary>
+        public static string menuVpnLogout {
+            get {
+                return ResourceManager.GetString("menuVpnLogout", resourceCulture);
+            }
+        }
         public static string Email {
             get {
                 return ResourceManager.GetString("Email", resourceCulture);
@@ -5406,6 +5424,15 @@ namespace ServiceLib.Resx {
         public static string PleaseFillCorrectPassword {
             get {
                 return ResourceManager.GetString("PleaseFillCorrectPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 请联系客服开通会员.
+        /// </summary>
+        public static string VpnMemberRequiredTip {
+            get {
+                return ResourceManager.GetString("VpnMemberRequiredTip", resourceCulture);
             }
         }
     }

@@ -1,7 +1,0 @@
-/tmp/v2rayN-osx-x64/v2rayN.icns
-/tmp/v2rayN-osx-x64/v2rayN.png
-/tmp/v2rayN-osx-x64/libAvaloniaNative.dylib
-/tmp/v2rayN-osx-x64/libHarfBuzzSharp.dylib
-/tmp/v2rayN-osx-x64/libe_sqlite3.dylib
-/tmp/v2rayN-osx-x64/libSkiaSharp.dylib
-/tmp/v2rayN-osx-x64/v2rayN

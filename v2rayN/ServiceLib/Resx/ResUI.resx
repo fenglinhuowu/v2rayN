@@ -411,6 +411,9 @@
   <data name="menuExit" xml:space="preserve">
     <value>Exit</value>
   </data>
+  <data name="menuCloseApp" xml:space="preserve">
+    <value>关闭软件</value>
+  </data>
   <data name="menuGlobalHotkeySetting" xml:space="preserve">
     <value>Global Hotkey Setting</value>
   </data>
@@ -1905,10 +1908,16 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="menuVpnGetNodes" xml:space="preserve">
     <value>Get Nodes</value>
   </data>
+  <data name="menuVpnLogout" xml:space="preserve">
+    <value>退出登录</value>
+  </data>
   <data name="PleaseFillEmailPassword" xml:space="preserve">
     <value>Please fill email and password</value>
   </data>
   <data name="PleaseFillCorrectPassword" xml:space="preserve">
     <value>Please fill a 6-digit password</value>
+  </data>
+  <data name="VpnMemberRequiredTip" xml:space="preserve">
+    <value>请联系客服开通会员</value>
   </data>
 </root>

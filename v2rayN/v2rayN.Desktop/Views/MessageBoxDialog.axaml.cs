@@ -9,7 +9,7 @@ public partial class MessageBoxDialog : Window
     {
     }
 
-    public MessageBoxDialog(string caption, string message)
+    public MessageBoxDialog(string caption, string message, bool okOnly = false)
     {
         InitializeComponent();
 
@@ -24,6 +24,7 @@ public partial class MessageBoxDialog : Window
 
         btnYes.Click += BtnYes_Click;
         btnNo.Click += BtnNo_Click;
+        btnNo.IsVisible = !okOnly;
 
         CanMinimize = false;
     }

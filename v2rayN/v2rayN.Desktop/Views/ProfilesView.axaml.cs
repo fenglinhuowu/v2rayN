@@ -13,7 +13,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         InitializeComponent();
 
         _config = AppManager.Instance.Config;
-        conTheme.Content ??= new ThemeSettingView();
+        conTheme.Content = new ThemeSettingView();
 
         lstProfiles.SelectionMode = SelectionMode.Single;
 
@@ -103,6 +103,21 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
                 var result = await UI.ShowYesNo(message);
                 interaction.SetOutput(result == ButtonResult.Yes);
             }).DisposeWith(disposables);
+
+            ViewModel.ShowMessageInteraction.RegisterHandler(async interaction =>
+            {
+                await UI.ShowOk(interaction.Input);
+                interaction.SetOutput(RxVoid.Default);
+            }).DisposeWith(disposables);
+
+            if (conTheme.Content is ThemeSettingView themeSettingView)
+            {
+                themeSettingView.BindVpnAuth(ViewModel);
+                ViewModel.WhenAnyValue(x => x.VpnLoggedIn)
+                    .ObserveOn(RxSchedulers.MainThreadScheduler)
+                    .Subscribe(themeSettingView.UpdateVpnLogoutVisible)
+                    .DisposeWith(disposables);
+            }
 
             ViewModel.SaveFileDialogInteraction.RegisterHandler(async interaction =>
             {

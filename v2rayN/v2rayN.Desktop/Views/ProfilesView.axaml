@@ -16,6 +16,7 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <conv:DelayColorConverter x:Key="DelayColorConverter" />
+        <conv:HalfWidthConverter x:Key="HalfWidthConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid RowDefinitions="Auto,*">
@@ -154,7 +155,7 @@
                         x:Name="btnVpnExit"
                         Margin="{StaticResource MarginLr4}"
                         Classes="IconButton Success"
-                        ToolTip.Tip="{x:Static resx:ResUI.menuExit}">
+                        ToolTip.Tip="{x:Static resx:ResUI.menuCloseApp}">
                         <PathIcon Data="{StaticResource SemiIconClose}" />
                     </Button>
                 </StackPanel>
@@ -168,14 +169,16 @@
                 ItemsSource="{Binding ProfileItems}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="2" />
+                        <WrapPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
                 <ListBox.Styles>
                     <Style Selector="ListBoxItem">
-                        <Setter Property="Padding" Value="2,0" />
-                        <Setter Property="Margin" Value="0,1" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="4,0,4,15" />
+                        <Setter Property="VerticalAlignment" Value="Top" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Width" Value="{Binding #lstProfiles.Bounds.Width, Converter={StaticResource HalfWidthConverter}}" />
                     </Style>
                 </ListBox.Styles>
                 <ListBox.ContextMenu>
@@ -272,7 +275,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border
-                            Padding="6,4"
+                            Padding="6,9"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Theme="{DynamicResource CardBorder}">

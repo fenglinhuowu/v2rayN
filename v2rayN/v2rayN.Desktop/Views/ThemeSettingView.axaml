@@ -19,7 +19,10 @@
         </Style>
     </UserControl.Styles>
 
-    <Button Margin="{StaticResource MarginLr8}" Classes="IconButton">
+    <Button
+        x:Name="btnMore"
+        Margin="{StaticResource MarginLr8}"
+        Classes="IconButton">
         <Button.Content>
             <PathIcon Data="{StaticResource SemiIconMore}">
                 <PathIcon.RenderTransform>
@@ -30,6 +33,17 @@
         <Button.Flyout>
             <Flyout>
                 <StackPanel Margin="{StaticResource MarginTb8}">
+                    <Button
+                        x:Name="btnVpnLogout"
+                        Margin="{StaticResource Margin4}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Content="{x:Static resx:ResUI.menuVpnLogout}"
+                        IsVisible="False" />
+                    <Separator
+                        x:Name="sepVpnLogout"
+                        Margin="{StaticResource MarginTb8}"
+                        IsVisible="False" />
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
                             Margin="{StaticResource Margin4}"

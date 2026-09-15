@@ -1,9 +1,0 @@
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/bin/Release/net10.0/ServiceLib.UdpTest.deps.json
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/bin/Release/net10.0/ServiceLib.UdpTest.dll
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/obj/Release/net10.0/ServiceLib.UdpTest.GeneratedMSBuildEditorConfig.editorconfig
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/obj/Release/net10.0/ServiceLib.UdpTest.AssemblyInfoInputs.cache
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/obj/Release/net10.0/ServiceLib.UdpTest.AssemblyInfo.cs
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/obj/Release/net10.0/ServiceLib.UdpTest.csproj.CoreCompileInputs.cache
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/obj/Release/net10.0/ServiceLib.UdpTest.dll
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/obj/Release/net10.0/refint/ServiceLib.UdpTest.dll
-/Users/paul/Downloads/v2rayN-master/v2rayN/ServiceLib.UdpTest/obj/Release/net10.0/ref/ServiceLib.UdpTest.dll

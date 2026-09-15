@@ -84,6 +84,9 @@ public class VpnItem
     public string? AccessToken { get; set; }
     public long ExpiresAt { get; set; }
     public string? VpnSubId { get; set; }
+    public string? UserEmail { get; set; }
+    public string? UserNickname { get; set; }
+    public string? UserType { get; set; }
 }
 
 [Serializable]

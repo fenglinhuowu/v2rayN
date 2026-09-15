@@ -3,6 +3,7 @@ namespace ServiceLib.ViewModels;
 public partial class ProfilesViewModel : MyReactiveObject
 {
     public Interaction<string, bool> ShowYesNoInteraction { get; } = new();
+    public Interaction<string, RxVoid> ShowMessageInteraction { get; } = new();
     public Interaction<ProfileItem, bool> SaveFileDialogInteraction { get; } = new();
     public Interaction<string, RxVoid> SetClipboardDataInteraction { get; } = new();
     public Interaction<RxVoid, RxVoid> ProfilesFocusInteraction { get; } = new();
@@ -96,6 +97,7 @@ public partial class ProfilesViewModel : MyReactiveObject
     public ReactiveCommand<RxVoid, RxVoid> VpnLoginCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> VpnGetNodesCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> VpnClearNodesCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> VpnLogoutCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> VpnExitCmd { get; }
 
     #endregion Menu
@@ -252,6 +254,7 @@ public partial class ProfilesViewModel : MyReactiveObject
         VpnLoginCmd = ReactiveCommand.CreateFromTask(async () => await OpenVpnAuthAsync());
         VpnGetNodesCmd = ReactiveCommand.CreateFromTask(async () => await VpnGetNodesAsync());
         VpnClearNodesCmd = ReactiveCommand.CreateFromTask(async () => await ClearAllServersAsync());
+        VpnLogoutCmd = ReactiveCommand.CreateFromTask(async () => await VpnLogoutAsync());
         VpnExitCmd = ReactiveCommand.CreateFromTask(async () => await AppManager.Instance.AppExitAsync(true));
 
         #endregion WhenAnyValue && ReactiveCommand
@@ -971,6 +974,12 @@ public partial class ProfilesViewModel : MyReactiveObject
             return;
         }
 
+        if (!VpnApiService.Instance.IsMember(_config))
+        {
+            await ShowMessageInteraction.HandleSafe(ResUI.VpnMemberRequiredTip);
+            return;
+        }
+
         var count = await VpnApiService.Instance.GetNodesAsync(_config);
         VpnLoggedIn = !VpnApiService.Instance.IsTokenExpired(_config);
         if (count > 0)
@@ -984,6 +993,18 @@ public partial class ProfilesViewModel : MyReactiveObject
         }
 
         NoticeManager.Instance.SendMessageEx(ResUI.OperationFailed);
+    }
+
+    public async Task LogoutVpnAsync()
+    {
+        await VpnLogoutAsync();
+    }
+
+    private async Task VpnLogoutAsync()
+    {
+        await VpnApiService.Instance.LogoutAsync(_config);
+        VpnLoggedIn = false;
+        NoticeManager.Instance.SendMessageAndEnqueue(ResUI.OperationSuccess);
     }
 
     #endregion VPN Auth

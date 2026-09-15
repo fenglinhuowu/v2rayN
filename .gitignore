@@ -1,5 +1,6 @@
 ﻿# Build Artifacts
 dist/
+macdist/
 *.dmg
 *.app/
 
@@ -7,6 +8,11 @@ dist/
 *.zip
 *.tar.gz
 *.gz
+
+# .NET
+[Bb]in/
+[Oo]bj/
+v2rayN-*/
 
 # OS Generated Files
 .DS_Store

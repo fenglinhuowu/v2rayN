@@ -166,8 +166,7 @@ public class VpnApiService
         var (response, error) = await PostAuthAsync(baseUri, "v1/vpn/auth/register", email, password);
         if (response?.ok == true && response.access_token.IsNotEmpty())
         {
-            config.VpnItem.AccessToken = response.access_token;
-            config.VpnItem.ExpiresAt = ParseExpiresAt(response.expires_at);
+            SaveAuthResult(config, response);
             return true;
         }
         if (error.IsNotEmpty())
@@ -186,8 +185,7 @@ public class VpnApiService
         var (response, error) = await PostAuthAsync(baseUri, "v1/vpn/auth/login", email, password);
         if (response?.ok == true && response.access_token.IsNotEmpty())
         {
-            config.VpnItem.AccessToken = response.access_token;
-            config.VpnItem.ExpiresAt = ParseExpiresAt(response.expires_at);
+            SaveAuthResult(config, response);
             return true;
         }
         if (error.IsNotEmpty())
@@ -197,11 +195,48 @@ public class VpnApiService
         return false;
     }
 
+    public bool IsMember(Config config)
+    {
+        return string.Equals(config.VpnItem?.UserType, "member", StringComparison.OrdinalIgnoreCase);
+    }
+
     public bool IsTokenExpired(Config config)
     {
         return config.VpnItem == null
             || config.VpnItem.AccessToken.IsNullOrEmpty()
             || config.VpnItem.ExpiresAt <= DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    }
+
+    public async Task<bool> LogoutAsync(Config config)
+    {
+        if (!TryGetBase(config, out var baseUri, out var token) || token.IsNullOrEmpty())
+        {
+            ClearAuthData(config);
+            await ConfigHandler.SaveConfig(config);
+            return true;
+        }
+
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var logoutUri = $"{baseUri.TrimEnd('/')}/v1/vpn/auth/logout";
+        try
+        {
+            using var content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json");
+            using var response = await _httpClient.PostAsync(logoutUri, content);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var err = ExtractServerError(responseBody) ?? $"HTTP {(int)response.StatusCode}";
+                NoticeManager.Instance.SendMessageEx(err);
+            }
+        }
+        finally
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+            ClearAuthData(config);
+            await ConfigHandler.SaveConfig(config);
+        }
+
+        return true;
     }
 
     public async Task<int> GetNodesAsync(Config config)
@@ -248,6 +283,28 @@ public class VpnApiService
         }
     }
 
+    private static void SaveAuthResult(Config config, AuthResponse response)
+    {
+        config.VpnItem.AccessToken = response.access_token;
+        config.VpnItem.ExpiresAt = ParseExpiresAt(response.expires_at);
+        if (response.user != null)
+        {
+            config.VpnItem.UserEmail = response.user.email;
+            config.VpnItem.UserNickname = response.user.nickname;
+            config.VpnItem.UserType = response.user.user_type;
+        }
+    }
+
+    private static void ClearAuthData(Config config)
+    {
+        config.VpnItem ??= new VpnItem();
+        config.VpnItem.AccessToken = null;
+        config.VpnItem.ExpiresAt = 0;
+        config.VpnItem.UserEmail = null;
+        config.VpnItem.UserNickname = null;
+        config.VpnItem.UserType = null;
+    }
+
     private static long ParseExpiresAt(string? value)
     {
         if (value.IsNullOrEmpty())
@@ -283,5 +340,6 @@ public class VpnApiService
     {
         public string? email { get; set; }
         public string? nickname { get; set; }
+        public string? user_type { get; set; }
     }
 }
