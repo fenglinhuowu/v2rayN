@@ -15,7 +15,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         _config = AppManager.Instance.Config;
         conTheme.Content ??= new ThemeSettingView();
 
-        lstProfiles.SelectionMode = SelectionMode.Multiple;
+        lstProfiles.SelectionMode = SelectionMode.Single;
 
         menuSelectAll.Click += menuSelectAll_Click;
         //btnAutofitColumnWidth.Click += BtnAutofitColumnWidth_Click; // DataGrid only
@@ -203,11 +203,21 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         }
     }
 
-    private void lstProfiles_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private async void lstProfiles_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (ViewModel != null)
         {
             ViewModel.SelectedProfiles = lstProfiles.SelectedItems.Cast<ProfileItemModel>().ToList();
+        }
+
+        if (e.AddedItems.Count != 1 || e.AddedItems[0] is not ProfileItemModel item)
+        {
+            return;
+        }
+
+        if (ViewModel != null)
+        {
+            await ViewModel.SetDefaultServer(item.IndexId);
         }
     }
 
