@@ -5,9 +5,17 @@ OutputPath="$2"
 Version="$3"
 
 FileName="v2rayN-${Arch}.zip"
-    wget -nv -O $FileName "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/$FileName"
-7z x $FileName
-cp -rf v2rayN-${Arch}/* $OutputPath
+    wget_cmd() {
+  local url="$1" out="$2"
+  curl -fL --retry 8 --retry-delay 3 --connect-timeout 30 --max-time 600 -o "$out" "$url" \
+    || wget -q --tries=8 --timeout=600 -O "$out" "$url"
+}
+[ -s "$FileName" ] || wget_cmd "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/$FileName" "$FileName"
+rm -rf CoreTmp
+7z x "$FileName" -oCoreTmp >/dev/null
+mkdir -p "$OutputPath"
+cp -rf "CoreTmp/v2rayN-${Arch}/." "$OutputPath/"
+rm -rf CoreTmp
 
 PackagePath="macdist/v2rayN-Package-${Arch}"
 mkdir -p "$PackagePath/v2rayN.app/Contents/Resources" macdist

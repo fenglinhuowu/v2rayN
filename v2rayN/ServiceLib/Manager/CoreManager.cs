@@ -28,7 +28,7 @@ public class CoreManager
         {
             var fromPath = Utils.GetBaseDirectory("bin");
             var toPath = Utils.GetBinPath("");
-            if (fromPath != toPath)
+            if (fromPath != toPath && Directory.Exists(fromPath))
             {
                 FileUtils.CopyDirectory(fromPath, toPath, true, false);
             }
