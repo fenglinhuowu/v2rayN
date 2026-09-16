@@ -25,20 +25,6 @@
                     DockPanel.Dock="Right"
                     Orientation="Horizontal"
                     VerticalAlignment="Center">
-                    <StackPanel
-                        x:Name="spEnableTun"
-                        Margin="{StaticResource MarginLr4}"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center">
-                        <TextBlock
-                            Margin="{StaticResource MarginLr4}"
-                            VerticalAlignment="Center"
-                            Text="Tun" />
-                        <ToggleSwitch
-                            x:Name="togEnableTun"
-                            Margin="{StaticResource Margin4}"
-                            Theme="{DynamicResource SimpleToggleSwitch}" />
-                    </StackPanel>
                     <ContentControl
                         x:Name="conTheme"
                         Margin="{StaticResource MarginLr4}" />

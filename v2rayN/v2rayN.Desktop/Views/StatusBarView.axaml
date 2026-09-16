@@ -24,7 +24,8 @@
             <StackPanel
                 Margin="{StaticResource MarginLr8}"
                 VerticalAlignment="Center"
-                DockPanel.Dock="Left">
+                DockPanel.Dock="Left"
+                IsVisible="False">
                 <TextBlock x:Name="txtInboundDisplay" />
                 <Border Margin="1" />
                 <TextBlock x:Name="txtInboundLanDisplay" />
