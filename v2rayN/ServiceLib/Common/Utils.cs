@@ -867,9 +867,11 @@ public class Utils
     {
         try
         {
+            var version = GetVersionInfo();
+            var appName = Global.AppName;
             return blFull
-                ? $"{Global.AppName} - V{GetVersionInfo()} - {RuntimeInformation.ProcessArchitecture}"
-                : $"{Global.AppName}/{GetVersionInfo()}";
+                ? $"{(string.IsNullOrEmpty(appName) ? "" : appName + " - ")}V{version} - {RuntimeInformation.ProcessArchitecture}".Trim()
+                : $"{(string.IsNullOrEmpty(appName) ? "" : appName + "/")}{version}";
         }
         catch (Exception ex)
         {
