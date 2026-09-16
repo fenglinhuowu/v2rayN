@@ -2,7 +2,6 @@
 #
 # Process Terminator Script for macOS
 # This script forcibly terminates a process and all its descendant processes
-#
 
 # Check if PID argument is provided
 if [ $# -ne 1 ]; then
@@ -24,17 +23,13 @@ if ! kill -0 $PID 2>/dev/null; then
     exit 0
 fi
 
-# Recursive function to find and kill all descendant processes
-kill_descendants() {
+# Recursive function to find all descendant processes
+collect_descendants() {
     local parent=$1
-    # Use ps -axo for macOS to ensure all processes are included
     local children=$(ps -axo pid=,ppid= | awk -v ppid=$parent '$2==ppid {print $1}')
-
-    echo "Processing children of PID: $parent..."
     for child in $children; do
-        kill_descendants "$child"
-        echo "Terminating child process: $child"
-        kill -9 "$child" 2>/dev/null || true
+        echo "$child"
+        collect_descendants "$child"
     done
 }
 
@@ -42,26 +37,33 @@ echo "============================================"
 echo "Starting termination of process $PID and all its descendants"
 echo "============================================"
 
-# Try graceful termination first
-echo "Attempting graceful termination (SIGTERM) of PID: $PID"
-kill -15 "$PID" 2>/dev/null || true
+# Collect ALL descendant PIDs BEFORE killing anything.
+# This prevents orphaned child processes when the parent exits
+# early (e.g. sudo forwards SIGTERM and exits, leaving xray orphaned).
+ALL_PIDS="$PID"
+for desc in $(collect_descendants "$PID"); do
+    ALL_PIDS="$ALL_PIDS $desc"
+done
+
+echo "All PIDs to terminate: $ALL_PIDS"
+
+# Try graceful termination first (SIGTERM to all)
+echo "Attempting graceful termination (SIGTERM)..."
+for pid in $ALL_PIDS; do
+    echo "  SIGTERM -> PID: $pid"
+    kill -15 "$pid" 2>/dev/null || true
+done
 sleep 1
 
-# If still running, fall back to kill_descendants
-# Use the macOS-native 'kill -0' check
-if kill -0 $PID 2>/dev/null; then
-    echo "Process $PID did not exit after SIGTERM; proceeding with forced termination of its descendants and itself"
-else
-    echo "Process $PID exited cleanly after SIGTERM"
-    exit 0
-fi
-
-# Find and kill all descendant processes
-kill_descendants "$PID"
-
-# Finally kill the main process
-echo "Terminating main process: $PID"
-kill -9 "$PID" 2>/dev/null || true
+# Force kill any still alive processes (SIGKILL)
+for pid in $ALL_PIDS; do
+    if kill -0 $pid 2>/dev/null; then
+        echo "  Process $pid did not exit after SIGTERM; sending SIGKILL"
+        kill -9 "$pid" 2>/dev/null || true
+    else
+        echo "  Process $pid exited cleanly after SIGTERM"
+    fi
+done
 
 # Wait a little for process/port resources to be fully released
 FINAL_WAIT_SECONDS=1

@@ -101,6 +101,12 @@ public partial class StatusBarViewModel : MyReactiveObject
     [Reactive]
     public partial bool BlIsNonWindows { get; set; }
 
+    [Reactive]
+    public partial bool BlTunVisible { get; set; }
+
+    [Reactive]
+    public partial bool BlProxyRoutingVisible { get; set; }
+
     #endregion UI
 
     public StatusBarViewModel()
@@ -111,6 +117,8 @@ public partial class StatusBarViewModel : MyReactiveObject
         RunningServerToolTipText = GetRunningServerToolTipText("-");
         BlSystemProxyPacVisible = Utils.IsWindows();
         BlIsNonWindows = Utils.IsNonWindows();
+        BlTunVisible = Utils.IsNonWindows() || Utils.IsAdministrator();
+        BlProxyRoutingVisible = true;
 
         if (_config.TunModeItem.EnableTun && AllowEnableTun())
         {
@@ -427,12 +435,21 @@ public partial class StatusBarViewModel : MyReactiveObject
         await SetListenerType((ESysProxyType)SystemProxySelected);
     }
 
+    private bool _tunChanging = false;
+
     private async Task DoEnableTun()
     {
+        if (_tunChanging)
+        {
+            return;
+        }
+
         if (_config.TunModeItem.EnableTun == EnableTun)
         {
             return;
         }
+
+        _tunChanging = true;
 
         _config.TunModeItem.EnableTun = EnableTun;
 
@@ -450,14 +467,22 @@ public partial class StatusBarViewModel : MyReactiveObject
                 var password = await PasswordInputInteraction.HandleSafe(RxVoid.Default);
                 if (password.IsNullOrEmpty())
                 {
-                    _config.TunModeItem.EnableTun = false;
+                    _config.TunModeItem.EnableTun = EnableTun = false;
+                    await ConfigHandler.SaveConfig(_config);
                     return;
                 }
             }
         }
 
-        await ConfigHandler.SaveConfig(_config);
-        ReloadRequested.Publish();
+        try
+        {
+            await ConfigHandler.SaveConfig(_config);
+            ReloadRequested.Publish();
+        }
+        finally
+        {
+            _tunChanging = false;
+        }
     }
 
     private bool AllowEnableTun()

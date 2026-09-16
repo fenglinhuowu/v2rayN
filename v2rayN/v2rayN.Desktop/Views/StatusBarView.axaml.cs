@@ -50,8 +50,6 @@ public partial class StatusBarView : ReactiveUserControl<StatusBarViewModel>
             }).DisposeWith(disposables);
         });
 
-        //spEnableTun.IsVisible = (Utils.IsWindows() || AppHandler.Instance.IsAdministrator);
-
         if (Utils.IsNonWindows() && cmbSystemProxy.Items.IsReadOnly == false)
         {
             cmbSystemProxy.Items.RemoveAt(cmbSystemProxy.Items.Count - 1);
@@ -80,7 +78,6 @@ public partial class StatusBarView : ReactiveUserControl<StatusBarViewModel>
         var password = obj?.ToString();
         if (password.IsNullOrEmpty())
         {
-            ViewModel!.EnableTun = false;
             return password;
         }
 

@@ -35,7 +35,7 @@
                 Margin="{StaticResource MarginLr8}"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left"
-                IsVisible="False"
+                IsVisible="{Binding BlTunVisible}"
                 Orientation="Horizontal">
                 <TextBlock
                     Margin="{StaticResource MarginLr8}"
@@ -53,7 +53,7 @@
                 Margin="{StaticResource MarginLr8}"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left"
-                IsVisible="False"
+                IsVisible="{Binding BlProxyRoutingVisible}"
                 Orientation="Horizontal">
                 <ComboBox
                     x:Name="cmbSystemProxy"

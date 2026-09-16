@@ -103,8 +103,8 @@ public class CoreManager
         }
 
         await CoreStart(mainContext);
-        await WaitForProxyPort(preContext);
         await CoreStartPreService(preContext);
+        await WaitForProxyPort(preContext);
 
         AppManager.Instance.RunningCoreType = preContext?.RunCoreType ?? mainContext.RunCoreType;
 
