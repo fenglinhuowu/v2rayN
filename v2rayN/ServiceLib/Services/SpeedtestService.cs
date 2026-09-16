@@ -449,6 +449,7 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
         var timeout = _config.SpeedTestItem.SpeedTestTimeout;
         await downloadHandle.DownloadDataAsync(url, webProxy, timeout, async (success, msg) =>
         {
+            msg = DownloadService.FormatSpeedTestProgressMessage(msg);
             decimal.TryParse(msg, out var dec);
             if (dec > 0)
             {

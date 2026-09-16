@@ -87,6 +87,8 @@ public class VpnItem
     public string? UserEmail { get; set; }
     public string? UserNickname { get; set; }
     public string? UserType { get; set; }
+    /// <summary>Once true, local node cache is no longer wiped on startup (VPN client expects empty list until fetch).</summary>
+    public bool FreshStorageInitialized { get; set; }
 }
 
 [Serializable]

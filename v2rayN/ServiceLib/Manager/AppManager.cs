@@ -125,14 +125,18 @@ public sealed class AppManager
         {
             Logging.SaveLog("AppExitAsync Begin");
 
+            _config.TunModeItem ??= new TunModeItem();
+            _config.TunModeItem.EnableTun = false;
+            Reset();
+
             await SysProxyHandler.UpdateSysProxy(_config, true);
             AppEvents.AppExitRequested.Publish();
             await Task.Delay(50); //Wait for AppExitRequested to be processed
 
+            await CoreManager.Instance.CoreStop();
             await ConfigHandler.SaveConfig(_config);
             await ProfileExManager.Instance.SaveTo();
             await StatisticsManager.Instance.SaveTo();
-            await CoreManager.Instance.CoreStop();
             StatisticsManager.Instance.Close();
 
             Logging.SaveLog("AppExitAsync End");

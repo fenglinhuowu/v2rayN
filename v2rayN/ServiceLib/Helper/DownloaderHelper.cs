@@ -1,5 +1,6 @@
 using System.Security.Authentication;
 using Downloader;
+using ServiceLib.Services;
 
 namespace ServiceLib.Helper;
 
@@ -114,7 +115,7 @@ public class DownloaderHelper
                 }
                 else if (value.Error != null)
                 {
-                    progress.Report(value.Error?.Message);
+                    progress.Report(DownloadService.FormatSpeedTestProgressMessage(value.Error.Message, value.Error));
                 }
                 else
                 {

@@ -268,9 +268,11 @@ public class VpnApiService
                 return -1;
             }
 
+            config.VpnItem ??= new VpnItem();
             var subid = config.VpnItem.VpnSubId ?? Guid.NewGuid().ToString("N");
             config.VpnItem.VpnSubId = subid;
             var count = await ConfigHandler.AddBatchServers(config, strData, subid, true);
+            await ConfigHandler.SaveConfig(config);
             if (count < 1)
             {
                 NoticeManager.Instance.SendMessageEx(ResUI.OperationFailed);

@@ -309,10 +309,14 @@ public partial class ProfilesViewModel : MyReactiveObject
         {
             item.Delay = result.Delay.ToInt();
             item.DelayVal = result.Delay ?? string.Empty;
+            if (result.Delay == ResUI.Speedtesting)
+            {
+                item.SpeedVal = string.Empty;
+            }
         }
         if (result.Speed.IsNotEmpty())
         {
-            item.SpeedVal = result.Speed ?? string.Empty;
+            item.SpeedVal = DownloadService.FormatSpeedTestProgressMessage(result.Speed) ?? string.Empty;
         }
         if (result.IpInfo.IsNotEmpty())
         {
@@ -394,6 +398,10 @@ public partial class ProfilesViewModel : MyReactiveObject
             }
             selected ??= lstModel.FirstOrDefault(t => t.IndexId == _config.IndexId);
             SelectedProfile = selected ?? lstModel.First();
+        }
+        else
+        {
+            SelectedProfile = new();
         }
 
         await DispatcherRefreshServersBizInteraction.HandleSafe(RxVoid.Default);
@@ -564,16 +572,15 @@ public partial class ProfilesViewModel : MyReactiveObject
         {
             return;
         }
-        var exists = lstAll.Exists(t => t.IndexId == _config.IndexId);
 
         await ConfigHandler.RemoveServers(_config, lstAll);
+        _config.IndexId = string.Empty;
+        await ConfigHandler.SaveConfig(_config);
         NoticeManager.Instance.Enqueue(ResUI.OperationSuccess);
         ProfileItems.Clear();
+        SelectedProfile = new();
         await RefreshServers();
-        if (exists)
-        {
-            Reload();
-        }
+        Reload();
     }
 
     private async Task RemoveDuplicateServer()

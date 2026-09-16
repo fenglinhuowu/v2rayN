@@ -16,6 +16,37 @@ public class DownloadService
     private static readonly string _tag = "DownloadService";
 
     /// <summary>
+    /// Maps timeout/cancellation to localized speed-test text; leaves numeric speed readings unchanged.
+    /// </summary>
+    public static string FormatSpeedTestProgressMessage(string? value, Exception? ex = null)
+    {
+        if (ex is OperationCanceledException or TaskCanceledException)
+        {
+            return ResUI.SpeedtestingTimeout;
+        }
+
+        if (value.IsNullOrEmpty())
+        {
+            return ex == null ? string.Empty : FormatSpeedTestProgressMessage(ex.Message);
+        }
+
+        if (decimal.TryParse(value, out _))
+        {
+            return value;
+        }
+
+        if (value.Contains("OperationCanceled", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("operation was canceled", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("The request was canceled", StringComparison.OrdinalIgnoreCase)
+            || value.Contains("任务取消", StringComparison.OrdinalIgnoreCase))
+        {
+            return ResUI.SpeedtestingTimeout;
+        }
+
+        return value;
+    }
+
+    /// <summary>
     /// Downloads data with the specified proxy and reports progress messages.
     /// </summary>
     public async Task<int> DownloadDataAsync(string url, IWebProxy webProxy, int downloadTimeout, Func<bool, string, Task> updateFunc)
@@ -23,23 +54,24 @@ public class DownloadService
         try
         {
             var progress = new Progress<string>();
-            progress.ProgressChanged += (sender, value) => updateFunc?.Invoke(false, $"{value}");
+            progress.ProgressChanged += (sender, value) =>
+                updateFunc?.Invoke(false, FormatSpeedTestProgressMessage(value));
 
             await DownloaderHelper.Instance.DownloadDataAsync4Speed(webProxy,
                   url,
                   progress,
                   downloadTimeout);
         }
-        catch (OperationCanceledException)
+        catch (Exception ex) when (ex is OperationCanceledException or TaskCanceledException)
         {
             await updateFunc?.Invoke(false, ResUI.SpeedtestingTimeout);
         }
         catch (Exception ex)
         {
-            await updateFunc?.Invoke(false, ex.Message);
+            await updateFunc?.Invoke(false, FormatSpeedTestProgressMessage(null, ex));
             if (ex.InnerException != null)
             {
-                await updateFunc?.Invoke(false, ex.InnerException.Message);
+                await updateFunc?.Invoke(false, FormatSpeedTestProgressMessage(null, ex.InnerException));
             }
         }
         return 0;

@@ -335,6 +335,7 @@ public partial class MainWindowViewModel : MyReactiveObject
         //await ConfigHandler.InitBuiltinRouting(_config);
         await ConfigHandler.InitBuiltinDNS(_config);
         await ConfigHandler.InitBuiltinFullConfigTemplate(_config);
+        await ConfigHandler.EnsureVpnFreshNodeStorageAsync(_config);
         await ProfileExManager.Instance.Init();
         await CoreManager.Instance.Init(_config, UpdateHandler);
         await CertPemManager.Instance.Init(_config);
@@ -680,6 +681,11 @@ public partial class MainWindowViewModel : MyReactiveObject
             var profileItem = await ConfigHandler.GetDefaultServer(_config);
             if (profileItem == null)
             {
+                await Task.Run(async () =>
+                {
+                    await CoreManager.Instance.CoreStop();
+                    await SysProxyHandler.UpdateSysProxy(_config, true);
+                });
                 NoticeManager.Instance.Enqueue(ResUI.CheckServerSettings);
                 return;
             }

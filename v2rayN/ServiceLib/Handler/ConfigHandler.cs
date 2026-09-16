@@ -468,11 +468,43 @@ public static class ConfigHandler
         if (item is null)
         {
             var item2 = await SQLiteHelper.Instance.TableAsync<ProfileItem>().FirstOrDefaultAsync();
-            await SetDefaultServerIndex(config, item2?.IndexId);
+            if (item2 is null)
+            {
+                if (config.IndexId.IsNotEmpty())
+                {
+                    config.IndexId = string.Empty;
+                    await SaveConfig(config);
+                }
+                return null;
+            }
+            await SetDefaultServerIndex(config, item2.IndexId);
             return item2;
         }
 
         return item;
+    }
+
+    /// <summary>
+    /// First run: drop any leftover v2rayN sample/cache nodes so the list starts empty until API fetch.
+    /// </summary>
+    public static async Task EnsureVpnFreshNodeStorageAsync(Config config)
+    {
+        config.VpnItem ??= new();
+        if (config.VpnItem.FreshStorageInitialized)
+        {
+            return;
+        }
+
+        config.VpnItem.FreshStorageInitialized = true;
+        var servers = await AppManager.Instance.ProfileItems(string.Empty);
+        if (servers is { Count: > 0 })
+        {
+            await RemoveServers(config, servers);
+        }
+
+        config.IndexId = string.Empty;
+        config.SubIndexId = string.Empty;
+        await SaveConfig(config);
     }
 
     /// <summary>
