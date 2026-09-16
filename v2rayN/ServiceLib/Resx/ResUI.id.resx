@@ -915,6 +915,9 @@
   <data name="SpeedtestingSkip" xml:space="preserve">
     <value>Lewati pengujian</value>
   </data>
+  <data name="SpeedtestingTimeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
   <data name="menuEditServer" xml:space="preserve">
     <value>Ubah</value>
   </data>

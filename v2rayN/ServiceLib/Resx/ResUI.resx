@@ -927,6 +927,9 @@
   <data name="SpeedtestingSkip" xml:space="preserve">
     <value>Skip test</value>
   </data>
+  <data name="SpeedtestingTimeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
   <data name="menuEditServer" xml:space="preserve">
     <value>Edit </value>
   </data>

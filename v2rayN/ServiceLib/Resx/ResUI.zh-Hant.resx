@@ -918,6 +918,9 @@
   <data name="SpeedtestingSkip" xml:space="preserve">
     <value>跳過測試</value>
   </data>
+  <data name="SpeedtestingTimeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
   <data name="menuEditServer" xml:space="preserve">
     <value>編輯</value>
   </data>

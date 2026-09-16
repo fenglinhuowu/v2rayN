@@ -30,6 +30,10 @@ public class DownloadService
                   progress,
                   downloadTimeout);
         }
+        catch (OperationCanceledException)
+        {
+            await updateFunc?.Invoke(false, ResUI.SpeedtestingTimeout);
+        }
         catch (Exception ex)
         {
             await updateFunc?.Invoke(false, ex.Message);

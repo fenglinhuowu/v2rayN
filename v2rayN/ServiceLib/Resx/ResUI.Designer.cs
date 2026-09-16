@@ -2617,6 +2617,15 @@ namespace ServiceLib.Resx {
         }
         
         /// <summary>
+        ///   查找类似 Timeout 的本地化字符串。
+        /// </summary>
+        public static string SpeedtestingTimeout {
+            get {
+                return ResourceManager.GetString("SpeedtestingTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Test terminating... 的本地化字符串。
         /// </summary>
         public static string SpeedtestingStop {
