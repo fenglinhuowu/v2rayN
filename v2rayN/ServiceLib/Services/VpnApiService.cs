@@ -18,7 +18,7 @@ public class VpnApiService
         var handler = new HttpClientHandler { UseCookies = false };
         _httpClient = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"v2rayN/{Utils.GetVersion()}");
+        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"{Global.AppName}/{Utils.GetVersion()}");
     }
 
     private static bool TryGetBase(Config config, out string baseUri, out string token)

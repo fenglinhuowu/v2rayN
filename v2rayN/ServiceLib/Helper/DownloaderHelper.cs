@@ -115,7 +115,7 @@ public class DownloaderHelper
                 }
                 else if (value.Error != null)
                 {
-                    progress.Report(DownloadService.FormatSpeedTestProgressMessage(value.Error.Message, value.Error));
+                    progress.Report(Services.DownloadService.FormatSpeedTestProgressMessage(value.Error.Message, value.Error));
                 }
                 else
                 {

@@ -3,6 +3,8 @@
 Arch="$1"
 OutputPath="$2"
 Version="$3"
+AppName="VBL"
+BundleId="com.vbl.app"
 
 FileName="v2rayN-${Arch}.zip"
     wget_cmd() {
@@ -17,14 +19,14 @@ mkdir -p "$OutputPath"
 cp -rf "CoreTmp/v2rayN-${Arch}/." "$OutputPath/"
 rm -rf CoreTmp
 
-PackagePath="macdist/v2rayN-Package-${Arch}"
-mkdir -p "$PackagePath/v2rayN.app/Contents/Resources" macdist
-cp -rf "$OutputPath" "$PackagePath/v2rayN.app/Contents/MacOS"
-cp -f "$PackagePath/v2rayN.app/Contents/MacOS/v2rayN.icns" "$PackagePath/v2rayN.app/Contents/Resources/AppIcon.icns"
-echo "When this file exists, app will not store configs under this folder" > "$PackagePath/v2rayN.app/Contents/MacOS/NotStoreConfigHere.txt"
-chmod +x "$PackagePath/v2rayN.app/Contents/MacOS/v2rayN"
+PackagePath="macdist/${AppName}-Package-${Arch}"
+mkdir -p "$PackagePath/${AppName}.app/Contents/Resources" macdist
+cp -rf "$OutputPath" "$PackagePath/${AppName}.app/Contents/MacOS"
+cp -f "$PackagePath/${AppName}.app/Contents/MacOS/VBL.icns" "$PackagePath/${AppName}.app/Contents/Resources/AppIcon.icns"
+echo "When this file exists, app will not store configs under this folder" > "$PackagePath/${AppName}.app/Contents/MacOS/NotStoreConfigHere.txt"
+chmod +x "$PackagePath/${AppName}.app/Contents/MacOS/${AppName}"
 
-cat >"$PackagePath/v2rayN.app/Contents/Info.plist" <<-EOF
+cat >"$PackagePath/${AppName}.app/Contents/Info.plist" <<-EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -42,17 +44,17 @@ cat >"$PackagePath/v2rayN.app/Contents/Info.plist" <<-EOF
     <string>hu</string>
   </array>
   <key>CFBundleDisplayName</key>
-  <string>v2rayN</string>
+  <string>${AppName}</string>
   <key>CFBundleExecutable</key>
-  <string>v2rayN</string>
+  <string>${AppName}</string>
   <key>CFBundleIconFile</key>
   <string>AppIcon</string>
   <key>CFBundleIconName</key>
   <string>AppIcon</string>
   <key>CFBundleIdentifier</key>
-  <string>2dust.v2rayN</string>
+  <string>${BundleId}</string>
   <key>CFBundleName</key>
-  <string>v2rayN</string>
+  <string>${AppName}</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
@@ -68,11 +70,11 @@ cat >"$PackagePath/v2rayN.app/Contents/Info.plist" <<-EOF
 EOF
 
 create-dmg \
-    --volname "v2rayN Installer" \
+    --volname "Installer" \
     --window-size 700 420 \
     --icon-size 100 \
-    --icon "v2rayN.app" 160 185 \
-    --hide-extension "v2rayN.app" \
+    --icon "${AppName}.app" 160 185 \
+    --hide-extension "${AppName}.app" \
     --app-drop-link 500 185 \
-    "macdist/v2rayN-${Arch}.dmg" \
-    "$PackagePath/v2rayN.app"
+    "macdist/${AppName}-${Arch}.dmg" \
+    "$PackagePath/${AppName}.app"

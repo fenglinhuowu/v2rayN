@@ -498,11 +498,11 @@ write_launcher_file() {
   install -m 755 /dev/stdin "$stage/usr/bin/v2rayn" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-DIR="/opt/v2rayN"
+DIR="/opt/VBL"
 cd "$DIR"
 
-if [[ -x "$DIR/v2rayN" ]]; then
-  exec "$DIR/v2rayN" "$@"
+if [[ -x "$DIR/VBL" ]]; then
+  exec "$DIR/VBL" "$@"
 fi
 
 for dll in v2rayN.Desktop.dll v2rayN.dll; do
@@ -511,7 +511,7 @@ for dll in v2rayN.Desktop.dll v2rayN.dll; do
   fi
 done
 
-echo "v2rayN launcher: no executable found in $DIR" >&2
+echo "VBL launcher: no executable found in $DIR" >&2
 ls -l "$DIR" >&2 || true
 exit 1
 EOF
@@ -523,8 +523,8 @@ write_desktop_file() {
   install -m 644 /dev/stdin "$stage/usr/share/applications/v2rayn.desktop" <<'EOF'
 [Desktop Entry]
 Type=Application
-Name=v2rayN
-Comment=v2rayN for Debian GNU Linux
+Name=VBL
+Comment=VBL for Debian GNU Linux
 Exec=v2rayn
 Icon=v2rayn
 Terminal=false
@@ -583,14 +583,14 @@ package_binary() {
   stage="$workdir/${PKGROOT}_${VERSION}_${deb_arch}"
   debian_dir="$stage/DEBIAN"
 
-  mkdir -p "$stage/opt/v2rayN" "$stage/usr/bin" "$stage/usr/share/applications" "$stage/usr/share/icons/hicolor/256x256/apps" "$debian_dir"
-  cp -a "$pubdir/." "$stage/opt/v2rayN/"
+  mkdir -p "$stage/opt/VBL" "$stage/usr/bin" "$stage/usr/share/applications" "$stage/usr/share/icons/hicolor/256x256/apps" "$debian_dir"
+  cp -a "$pubdir/." "$stage/opt/VBL/"
 
   project_dir="$(cd "$(dirname "$PROJECT")" && pwd)"
-  icon_candidate="$project_dir/v2rayN.png"
+  icon_candidate="$project_dir/VBL.png"
   [[ -f "$icon_candidate" ]] && cp "$icon_candidate" "$stage/usr/share/icons/hicolor/256x256/apps/v2rayn.png" || true
 
-  stage_runtime_assets "$stage/opt/v2rayN" "$rid"
+  stage_runtime_assets "$stage/opt/VBL" "$rid"
   write_launcher_file "$stage"
   write_desktop_file "$stage"
   write_maintainer_scripts "$debian_dir"
@@ -607,7 +607,7 @@ Standards-Version: 4.7.0
 
 Package: v2rayn
 Architecture: ${deb_arch}
-Description: v2rayN
+Description: VBL
 EOF
 
   multiarch="$(dpkg-architecture -a"$deb_arch" -qDEB_HOST_MULTIARCH)"
@@ -617,14 +617,14 @@ EOF
   : > "$debian_dir/substvars"
 
   mapfile -t ELF_FILES < <(
-    find "$stage/opt/v2rayN" -type f \( -name "*.so*" -o -perm -111 \) ! -name 'libcoreclrtraceptprovider.so'
+    find "$stage/opt/VBL" -type f \( -name "*.so*" -o -perm -111 \) ! -name 'libcoreclrtraceptprovider.so'
   )
 
   if [[ "${#ELF_FILES[@]}" -gt 0 ]]; then
     (
       cd "$workdir"
       dpkg-shlibdeps \
-        -l"$stage/opt/v2rayN" \
+        -l"$stage/opt/VBL" \
         -l"$sys_libdir" \
         -l"$sys_usrlibdir" \
         -T"$debian_dir/substvars" \
@@ -653,14 +653,14 @@ Homepage: https://github.com/2dust/v2rayN
 Section: net
 Priority: optional
 Depends: ${final_depends}
-Description: v2rayN (Avalonia) GUI client for Linux
+Description: VBL (Avalonia) GUI client for Linux
  Support vless / vmess / Trojan / http / socks / Anytls / Hysteria2 /
  Shadowsocks / tuic / WireGuard.
 EOF
 
-  find "$stage/opt/v2rayN" -type d -exec chmod 0755 {} +
-  find "$stage/opt/v2rayN" -type f -exec chmod 0644 {} +
-  [[ -f "$stage/opt/v2rayN/v2rayN" ]] && chmod 0755 "$stage/opt/v2rayN/v2rayN" || true
+  find "$stage/opt/VBL" -type d -exec chmod 0755 {} +
+  find "$stage/opt/VBL" -type f -exec chmod 0644 {} +
+  [[ -f "$stage/opt/VBL/VBL" ]] && chmod 0755 "$stage/opt/VBL/VBL" || true
 
   deb_out="$OUTPUT_DIR/v2rayn_${VERSION}_${deb_arch}.deb"
   dpkg-deb --root-owner-group --build "$stage" "$deb_out"

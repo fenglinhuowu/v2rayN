@@ -37,7 +37,7 @@ public class CoreManager
         {
             var localAppDataBin = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "v2rayN", "bin");
+                Global.AppName, "bin");
             var currentBin = Utils.GetBinPath("");
             if (localAppDataBin != currentBin && Directory.Exists(localAppDataBin))
             {

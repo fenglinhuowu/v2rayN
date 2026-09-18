@@ -499,10 +499,10 @@ write_spec_file() {
 %undefine _debugsource_packages
 %global __requires_exclude ^liblttng-ust\.so\..*$
 
-Name:           v2rayN
+Name:           VBL
 Version:        __VERSION__
 Release:        1%{?dist}
-Summary:        v2rayN (Avalonia) GUI client for Linux
+Summary:        VBL (Avalonia) GUI client for Linux
 License:        GPL-3.0-only
 URL:            https://github.com/2dust/v2rayN
 BugURL:         https://github.com/2dust/v2rayN/issues
@@ -519,7 +519,7 @@ Requires:       bash >= 5.2.21
 Requires:       freetype >= 2.13
 
 %description
-v2rayN Linux for Red Hat Enterprise Linux
+VBL Linux for Red Hat Enterprise Linux
 Support vless / vmess / Trojan / http / socks / Anytls / Hysteria2 / Shadowsocks / tuic / WireGuard
 Support Red Hat Enterprise Linux / Fedora Linux / Rocky Linux / AlmaLinux / CentOS
 For more information, Please visit our website
@@ -531,26 +531,26 @@ https://github.com/2dust/v2rayN
 %build
 
 %install
-install -dm0755 %{buildroot}/opt/v2rayN
-cp -a * %{buildroot}/opt/v2rayN/
+install -dm0755 %{buildroot}/opt/VBL
+cp -a * %{buildroot}/opt/VBL/
 
-find %{buildroot}/opt/v2rayN -type d -exec chmod 0755 {} +
-find %{buildroot}/opt/v2rayN -type f -exec chmod 0644 {} +
-[ -f %{buildroot}/opt/v2rayN/v2rayN ] && chmod 0755 %{buildroot}/opt/v2rayN/v2rayN || :
+find %{buildroot}/opt/VBL -type d -exec chmod 0755 {} +
+find %{buildroot}/opt/VBL -type f -exec chmod 0644 {} +
+[ -f %{buildroot}/opt/VBL/VBL ] && chmod 0755 %{buildroot}/opt/VBL/VBL || :
 
 install -dm0755 %{buildroot}%{_bindir}
 install -m0755 /dev/stdin %{buildroot}%{_bindir}/v2rayn << 'EOF'
 #!/usr/bin/bash
 set -euo pipefail
-DIR="/opt/v2rayN"
+DIR="/opt/VBL"
 
-if [[ -x "$DIR/v2rayN" ]]; then exec "$DIR/v2rayN" "$@"; fi
+if [[ -x "$DIR/VBL" ]]; then exec "$DIR/VBL" "$@"; fi
 
 for dll in v2rayN.Desktop.dll v2rayN.dll; do
   if [[ -f "$DIR/$dll" ]]; then exec /usr/bin/dotnet "$DIR/$dll" "$@"; fi
 done
 
-echo "v2rayN launcher: no executable found in $DIR" >&2
+echo "VBL launcher: no executable found in $DIR" >&2
 ls -l "$DIR" >&2 || true
 exit 1
 EOF
@@ -559,8 +559,8 @@ install -dm0755 %{buildroot}%{_datadir}/applications
 install -m0644 /dev/stdin %{buildroot}%{_datadir}/applications/v2rayn.desktop << 'EOF'
 [Desktop Entry]
 Type=Application
-Name=v2rayN
-Comment=v2rayN for Red Hat Enterprise Linux
+Name=VBL
+Comment=VBL for Red Hat Enterprise Linux
 Exec=v2rayn
 Icon=v2rayn
 Terminal=false
@@ -580,7 +580,7 @@ install -m0644 %{_builddir}/__PKGROOT__/v2rayn.png %{buildroot}%{_datadir}/icons
 
 %files
 %{_bindir}/v2rayn
-/opt/v2rayN
+/opt/VBL
 %{_datadir}/applications/v2rayn.desktop
 %{_datadir}/icons/hicolor/256x256/apps/v2rayn.png
 SPEC
@@ -613,7 +613,7 @@ package_binary() {
   cp -a "$pubdir/." "$workdir/$PKGROOT/"
 
   project_dir="$(cd "$(dirname "$PROJECT")" && pwd)"
-  icon_candidate="$project_dir/v2rayN.png"
+  icon_candidate="$project_dir/VBL.png"
   [[ -f "$icon_candidate" ]] || { echo "Required icon not found: $icon_candidate"; return 1; }
   cp "$icon_candidate" "$workdir/$PKGROOT/v2rayn.png"
 
